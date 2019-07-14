@@ -1,0 +1,105 @@
+﻿@model Data.Entities.Models.Usuario
+
+@{
+    ViewData["Title"] = "Cadastro de Profissional";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastro/Atualização de Profissional</h4>
+        <p class="card-description">
+            Informe os dados corretamente
+        </p>
+        <form class="@Url.Action("Cadastro")" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Digite o nome do profissional" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>CPF</label>
+                        @Html.TextBoxFor(m => m.Cpf, new { @class = "form-control cpf", placeholder = "CPF" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>RG</label>
+                        @Html.TextBoxFor(m => m.Rg, new { @class = "form-control", placeholder = "RG" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Login</label>
+                        @Html.TextBoxFor(m => m.CodigoAcesso, new { @class = "form-control", placeholder = "ex: 9990", type = "number" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Senha</label>
+                        @Html.TextBoxFor(m => m.SenhaAcesso, new { @class = "form-control", placeholder = "*****", type = "password" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Veterinário?</label>
+                        <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <input type="hidden" value="@Model.EhVet" id="hddVeterinario" />
+                                <input type="checkbox" value="0" id="cbVeterinario" name="EhVet" />
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Administrador?</label>
+                        <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <input type="hidden" value="@Model.EhAdministrador" id="hddAdmin" />
+                                <input type="checkbox" value="0" id="cbAdministrador" name="EhAdministrador" />
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Habilitado?</label>
+                        <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <input type="hidden" value="@Model.Ativo" id="hddAtivo" />
+                                <input type="checkbox" value="1" id="cbHabilitado" checked="checked" name="Ativo" />
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 especialidade">
+                    <div class="form-group">
+                        <label>Especialidade</label>
+                        <select class="js-example-basic-multiple w-100" multiple="multiple" id="ddlEspecialidades" style="width: 100%" name="especialidades"></select>
+                    </div>
+                </div>
+                <div class="col-md-3 especialidade">
+                    <div class="form-group">
+                        <label>CRV</label>
+                        @Html.TextBoxFor(m => m.Crv, new { @class = "form-control", placeholder = "CRV" })
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mr-2">Confirmar</button>
+            <a class="btn btn-light" href="@Url.Action("Profissionais")">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+<input type="hidden" id="hddRegistroId" value="@Model.Id" />
+
+@section scripts{
+    <script src="~/paginas/cadastro-profissional.js"></script>
+}
