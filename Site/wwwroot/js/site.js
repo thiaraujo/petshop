@@ -1,13 +1,13 @@
 ﻿$(document).ready(function () {
     $('.date').mask('00/00/0000');
-    $('.time').mask('00:00:00');
-    $('.date_time').mask('00/00/0000 00:00:00');
+    $('.time').mask('00:00');
     $('.cep').mask('00000-000');
-    $('.phone').mask('0000-0000');
+    $('.telefone').mask('0000-0000');
     $('.cpf').mask('000.000.000-00', { reverse: true });
-
-    if ($(".js-example-basic-multiple").length) {
-        $(".js-example-basic-multiple").select2({
+    $('.cnpj').mask('00.000.000/0000-00', { reverse: true });
+    $('.money').mask('000.000.000.000.000,00', { reverse: true });
+    if ($(".select-multiple").length) {
+        $(".select-multiple").select2({
             theme: "classic"
         });
     }

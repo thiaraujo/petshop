@@ -1,15 +1,15 @@
 ﻿@using X.PagedList.Mvc.Core
-@model X.PagedList.IPagedList<Data.Entities.Models.Usuario>
+@model X.PagedList.IPagedList<Data.Entities.Models.Servico>
 
 @{
-    ViewData["Title"] = "Profissionais";
+    ViewData["Title"] = "Serviços";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="">
-    <form action="@Url.Action("Profissionais")">
+    <form action="@Url.Action("Servicos")">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Procurar por profissional..." autofocus="autofocus" name="s" />
+            <input type="text" class="form-control" placeholder="Procurar por serviço..." autofocus="autofocus" name="s" />
             <span class="input-group-btn">
                 <button class="btn btn-info btn-lg" type="submit"><i class="fa fa-search"></i></button>
             </span>
@@ -21,7 +21,7 @@
 <div class="card">
     <div class="card-body">
         <h4 class="card-title">
-            Profissionais
+            Serviços
             <a href="@Url.Action("Cadastro")" class="btn btn-outline-primary pull-right">Adicionar</a>
         </h4>
         <br />
@@ -30,11 +30,11 @@
                 <thead>
                     <tr>
                         <th class="text-center">Id</th>
-                        <th>Nome</th>
-                        <th class="text-center">CPF</th>
-                        <th class="text-center">Login</th>
-                        <th class="text-center">Veterinário</th>
-                        <th class="text-center">Master</th>
+                        <th>Descrição</th>
+                        <th class="text-center">Tempo Estimado</th>
+                        <th class="text-center">Preço</th>
+                        <th class="text-center">Exec. Veterinário</th>
+                        <th class="text-center">Pontos Pataz</th>
                         <th class="text-center">Ativo</th>
                         <th class="text-center">#</th>
                     </tr>
@@ -45,10 +45,17 @@
                         <tr>
                             <td class="text-center">@item.Id</td>
                             <td>@item.Nome</td>
-                            <td class="text-center">@item.Cpf</td>
-                            <td class="text-center">@item.CodigoAcesso</td>
-                            <td class="text-center">@(item.EhVet == 1 ? "Sim" : "Não")</td>
-                            <td class="text-center">@(item.EhAdministrador == 1 ? "Sim" : "Não")</td>
+                            <td class="text-center">@(item.TempoEstimado.HasValue ? item.TempoEstimado.Value.ToString("g") : "-")</td>
+                            <td class="text-center">
+                                @item.Preco.ToString("C")
+                                @if (item.PrecoAntigo.HasValue)
+                                {
+                                    <br />
+                                    <small data-placement="bottom" data-toggle="tooltip" title="Preço anterior">@item.PrecoAntigo.Value.ToString("C")</small>
+                                }
+                            </td>
+                            <td class="text-center">@(item.RealizadoPorVet == 1 ? "Sim" : "Não")</td>
+                            <td class="text-center">@(item.PatazRecebido ?? 0)</td>
                             <td class="text-center">@(item.Ativo == 1 ? "Sim" : "Não")</td>
                             <td class="text-center">
                                 <a href="@Url.Action("Cadastro", new {id = item.Id})" class="btn btn-xs btn-info" data-toggle="Editar Registro">
@@ -59,7 +66,7 @@
                     }
                 </tbody>
             </table>
-            @Html.PagedListPager(Model, page => Url.Action("Profissionais", new { p = page }))
+            @Html.PagedListPager(Model, page => Url.Action("Servicos", new { p = page }))
         </div>
     </div>
 </div>

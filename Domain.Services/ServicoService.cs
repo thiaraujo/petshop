@@ -44,7 +44,7 @@ namespace Domain.Services
         // Verifica se houve alteração de preço
         private async Task<decimal> HouveAlteracaoPreco(Servico servico)
         {
-            var registroAtual = await DbSet.FindAsync(servico.Id);
+            var registroAtual = await DbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == servico.Id);
             // Se o preço registrado atualmente for diferente do novo preço, retorna o valor atual para histórico
             if (registroAtual.Preco != servico.Preco)
                 return registroAtual.Preco;

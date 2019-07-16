@@ -1,0 +1,88 @@
+﻿@model Data.Entities.Models.Servico
+
+@{
+    ViewData["Title"] = "Cadastro de Serviço";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastro/Atualização de Serviço</h4>
+        <p class="card-description">
+            Informe os dados corretamente
+        </p>
+        <form class="@Url.Action("Cadastro")" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Descrição do serviço", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Tempo Estimado</label><small>(min)</small>
+                        @Html.TextBoxFor(m => m.TempoEstimado, new { @class = "form-control time", placeholder = "__:__", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Preço</label>
+                        @Html.TextBoxFor(m => m.Preco, new { @class = "form-control money", placeholder = "R$ 35,00", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Pataz Recebido</label>
+                        @Html.TextBoxFor(m => m.PatazRecebido, new { @class = "form-control", placeholder = "28", type = "number" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Pataz Necessário</label>
+                        @Html.TextBoxFor(m => m.PatazNecessario, new { @class = "form-control", placeholder = "300", type = "number" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Executado por veterinário?</label>
+                        <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <input type="hidden" value="@Model.RealizadoPorVet" id="hddVeterinario" />
+                                <input type="checkbox" value="0" id="cbVeterinario" name="RealizadoPorVet" />
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Habilitado?</label>
+                        <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <input type="hidden" value="@Model.Ativo" id="hddAtivo" />
+                                <input type="checkbox" value="1" id="cbHabilitado" checked="checked" name="Ativo" />
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Produtos Utilizados</label>
+                        <select class="select-multiple w-100" multiple="multiple" id="ddlProdutos" style="width: 100%" name="produtos"></select>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mr-2">Confirmar</button>
+            <a class="btn btn-light" href="@Url.Action("Servicos")">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+<input type="hidden" id="hddRegistroId" value="@Model.Id" />
+
+@section scripts{
+    <script src="~/paginas/cadastro-servico.js"></script>
+}

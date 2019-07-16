@@ -14,11 +14,13 @@ namespace Middleware.IoC
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
             services.AddScoped<IUsuario, UsuarioService>();
+            services.AddScoped<IUsuarioEspecialidade, UsuarioEspecialidadeService>();
             services.AddScoped<IAnimal, AnimalService>();
             services.AddScoped<IAgendamento, AgendamentoService>();
             services.AddScoped<ICliente, ClienteService>();
             services.AddScoped<IPorteAnimal, PorteAnimalService>();
             services.AddScoped<IProduto, ProdutoService>();
+            services.AddScoped<IServicoProduto, ServicoProdutoService>();
             services.AddScoped<IPromocao, PromocaoService>();
             services.AddScoped<IRacaAnimal, RacaAnimalService>();
             services.AddScoped<IServico, ServicoService>();

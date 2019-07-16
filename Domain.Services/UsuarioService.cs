@@ -34,16 +34,16 @@ namespace Domain.Services
                     return null;
             }
 
+            //Verifica se precisa atualizar a senha, se a mesma for inferior a 20 caracteres, então encripta
+            if (usuario.SenhaAcesso.Length < 20)
+                usuario.SenhaAcesso = usuario.SenhaAcesso.EncriptText();
+
             if (usuario.Id > 0)
                 Db.Update(usuario);
             else
                 await DbSet.AddAsync(usuario);
 
             await Db.SaveChangesAsync();
-
-            // Converte para array para não perder a referência
-            if (tipoPet.Any())
-                await RegistraTipoDePets(tipoPet, usuario.Id);
 
             return usuario;
         }
@@ -68,38 +68,6 @@ namespace Domain.Services
                 Db.Update(registro);
                 await Db.SaveChangesAsync();
             }
-        }
-
-        public async Task<IEnumerable<UsuarioEspecialidade>> ConsultaEspecialidadesVeterinario(int usuarioId)
-        {
-            return await Db.UsuarioEspecialidade
-                .Include(x => x.TipoAnimal)
-                .Where(x => x.UsuarioId == usuarioId)
-                .ToListAsync();
-        }
-
-        private async Task RegistraTipoDePets(int[] tipos, int vetId)
-        {
-            var tiposJaRegistrados = await Db.UsuarioEspecialidade.Where(x => x.UsuarioId == vetId).ToListAsync();
-
-            if (tiposJaRegistrados.Any())
-            {
-                Db.UsuarioEspecialidade.RemoveRange(tiposJaRegistrados);
-            }
-
-            //Adiciona as especialidades
-            var especialidades = new List<UsuarioEspecialidade>();
-            foreach (var item in tipos)
-            {
-                especialidades.Add(new UsuarioEspecialidade
-                {
-                    UsuarioId = vetId,
-                    TipoAnimalId = item
-                });
-            }
-
-            await Db.UsuarioEspecialidade.AddRangeAsync(especialidades);
-            await Db.SaveChangesAsync();
         }
     }
 }

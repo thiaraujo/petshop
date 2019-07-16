@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Data.Entities.Models;
 
@@ -11,6 +10,5 @@ namespace Domain.Interfaces
         Task<Usuario> CadastraOuAtualiza(Usuario usuario, int[] tipoPet);
         Task<IEnumerable<Usuario>> ConsultaRegistros(string usuario);
         Task DesabilitarRegistro(int usuarioId);
-        Task<IEnumerable<UsuarioEspecialidade>> ConsultaEspecialidadesVeterinario(int usuarioId);
     }
 }
