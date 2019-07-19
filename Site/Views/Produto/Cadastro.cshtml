@@ -1,0 +1,90 @@
+﻿@model Data.Entities.Models.Produto
+
+@{
+    ViewData["Title"] = "Cadastro de produto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastro/Atualização de Produto</h4>
+        <p class="card-description">
+            Informe os dados corretamente
+        </p>
+        <form class="@Url.Action("Cadastro")" method="post" enctype="multipart/form-data">
+            <div class="row">
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.DataCadastro)
+                @Html.HiddenFor(m => m.Foto)
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Código</label>
+                        @Html.TextBoxFor(m => m.Codigo, new { @class = "form-control", placeholder = "28", type = "number" })
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Descrição do produto", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Fabricante</label>
+                        @Html.TextBoxFor(m => m.Fabricante, new { @class = "form-control", placeholder = "ex: Goldens Max", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Especificação</label>
+                        @Html.TextAreaFor(m => m.Especificacao, new { @class = "form-control", placeholder = "Informe detalhadamente sobre o produto", Rows = "6" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Preço</label>
+                        @Html.TextBoxFor(m => m.Preco, new { @class = "form-control money", placeholder = "R$ 35,00", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Estoque</label>
+                        @Html.TextBoxFor(m => m.Estoque, new { @class = "form-control", placeholder = "28", type = "number" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Habilitado?</label>
+                        <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <input type="hidden" value="@Model.Ativo" id="hddAtivo" />
+                                <input type="checkbox" value="1" id="cbHabilitado" checked="checked" name="Ativo" />
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Foto</label><br/>
+                        @if (string.IsNullOrEmpty(Model.Foto))
+                        {
+                            <input type="file" name="file" accept="image/*" />
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-xs btn-outline-dark" onclick="alterarFoto()" id="btnAlterarFoto">Alterar foto</button>
+                            <input type="file" name="file" accept="image/*" style="display: none" id="imgAlterarFoto" />
+                        }
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mr-2">Confirmar</button>
+            <a class="btn btn-light" href="@Url.Action("Produtos")">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/paginas/cadastro-produto.js"></script>
+}

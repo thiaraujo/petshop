@@ -162,6 +162,10 @@ namespace Data.Entities.Models
 
                 entity.Property(e => e.Especificacao).HasColumnType("text");
 
+                entity.Property(e => e.Foto)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Fabricante)
                     .HasMaxLength(200)
                     .IsUnicode(false);

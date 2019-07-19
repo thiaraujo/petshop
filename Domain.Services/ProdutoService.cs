@@ -24,7 +24,10 @@ namespace Domain.Services
             if (produto.Id > 0)
                 Db.Update(produto);
             else
+            {
+                produto.DataCadastro = DateTime.Now;
                 await DbSet.AddAsync(produto);
+            }
 
             await Db.SaveChangesAsync();
             return produto;

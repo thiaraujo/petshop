@@ -20,6 +20,7 @@ namespace Data.Entities.Models
         public decimal? Preco { get; set; }
         public int? Estoque { get; set; }
         public DateTime DataCadastro { get; set; }
+        public string Foto { get; set; }
         public int Ativo { get; set; }
 
         public virtual ICollection<Promocao> Promocao { get; set; }

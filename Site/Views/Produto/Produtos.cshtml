@@ -1,0 +1,70 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<Data.Entities.Models.Produto>
+
+@{
+    ViewData["Title"] = "Produtos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="">
+    <form action="@Url.Action("Produtos")">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Procurar por produto..." autofocus="autofocus" name="s" />
+            <span class="input-group-btn">
+                <button class="btn btn-info btn-lg" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <br />
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">
+            Produtos
+            <a href="@Url.Action("Cadastro")" class="btn btn-outline-primary pull-right">Adicionar</a>
+        </h4>
+        <br />
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">Foto</th>
+                        <th class="text-center">Código</th>
+                        <th>Descrição</th>
+                        <th>Fabricante</th>
+                        <th class="text-center">Preço</th>
+                        <th class="text-center">Estoque</th>
+                        <th class="text-center">Ativo</th>
+                        <th class="text-center">#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @if (!string.IsNullOrEmpty(item.Foto))
+                                {
+                                    <img src="~/images/produtos/@item.Foto" alt="@item.Nome" class="img-sm" />
+                                }
+                            </td>
+                            <td class="text-center">@item.Codigo</td>
+                            <td>@item.Nome</td>
+                            <td>@item.Fabricante</td>
+                            <td class="text-center">@(item.Preco.HasValue ? item.Preco.Value.ToString("C") : "-")</td>
+                            <td class="text-center">@item.Estoque</td>
+                            <td class="text-center">@(item.Ativo == 1 ? "Sim" : "Não")</td>
+                            <td class="text-center">
+                                <a href="@Url.Action("Cadastro", new {id = item.Id})" class="btn btn-xs btn-info" data-toggle="Editar Registro">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @Html.PagedListPager(Model, page => Url.Action("Produtos", new { p = page }))
+        </div>
+    </div>
+</div>

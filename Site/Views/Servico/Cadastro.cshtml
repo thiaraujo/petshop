@@ -13,6 +13,7 @@
         </p>
         <form class="@Url.Action("Cadastro")" method="post">
             <div class="row">
+                @Html.HiddenFor(m => m.Id)
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Descrição</label>
