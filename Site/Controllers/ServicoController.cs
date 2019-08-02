@@ -5,7 +5,6 @@ using Data.Entities.ViewModels;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Middleware.Converters.Interface;
-using Middleware.Converters.Service;
 using Site.Abstraction;
 using X.PagedList;
 
@@ -21,12 +20,12 @@ namespace Site.Controllers
         private readonly IServicoProduto _servicoProduto;
         private readonly IToastrMensagem _toastrMensagem;
 
-        public ServicoController(IServico servico, IProduto produto, IServicoProduto servicoProduto)
+        public ServicoController(IServico servico, IProduto produto, IServicoProduto servicoProduto, IToastrMensagem toastrMensagem)
         {
             _servico = servico;
             _produto = produto;
             _servicoProduto = servicoProduto;
-            _toastrMensagem = new ToastrMensagem();
+            _toastrMensagem = toastrMensagem;
         }
 
         #endregion

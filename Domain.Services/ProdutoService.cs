@@ -99,5 +99,16 @@ namespace Domain.Services
 
             return produtoFinal;
         }
+
+        public async Task<bool> AtualizaEstoque(int id, int estoque)
+        {
+            var registro = await DbSet.FindAsync(id);
+            if (registro == null) return false;
+
+            registro.Estoque += estoque;
+            Db.Update(registro);
+            await Db.SaveChangesAsync();
+            return true;
+        }
     }
 }

@@ -5,7 +5,6 @@ using Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Middleware.Converters.Interface;
-using Middleware.Converters.Service;
 using Site.Abstraction;
 using Site.Services;
 using X.PagedList;
@@ -20,10 +19,10 @@ namespace Site.Controllers
         private readonly IProduto _produto;
         private readonly IToastrMensagem _toastrMensagem;
 
-        public ProdutoController(IProduto produto)
+        public ProdutoController(IProduto produto, IToastrMensagem toastrMensagem)
         {
             _produto = produto;
-            _toastrMensagem = new ToastrMensagem();
+            _toastrMensagem = toastrMensagem;
         }
 
         #endregion

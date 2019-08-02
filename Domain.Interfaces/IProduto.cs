@@ -12,5 +12,6 @@ namespace Domain.Interfaces
         Task MovimentacaoEstoque(int produtoId, int? entrada, int? saida);
         Task DesabilitarRegistro(int produtoId);
         Task<ProdutoViewModel> RegistroDoProduto(int produtoId);
+        Task<bool> AtualizaEstoque(int id, int estoque);
     }
 }

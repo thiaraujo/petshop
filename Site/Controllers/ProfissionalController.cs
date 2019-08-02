@@ -21,12 +21,12 @@ namespace Site.Controllers
         private readonly IUsuarioEspecialidade _usuarioEspecialidade;
         private readonly IToastrMensagem _toastrMensagem;
 
-        public ProfissionalController(IUsuario usuario, ITipoAnimal tipoAnimal, IUsuarioEspecialidade usuarioEspecialidade)
+        public ProfissionalController(IUsuario usuario, ITipoAnimal tipoAnimal, IUsuarioEspecialidade usuarioEspecialidade, IToastrMensagem toastrMensagem)
         {
             _usuario = usuario;
             _tipoAnimal = tipoAnimal;
             _usuarioEspecialidade = usuarioEspecialidade;
-            _toastrMensagem = new ToastrMensagem();
+            _toastrMensagem = toastrMensagem;
         }
 
         #endregion

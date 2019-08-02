@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Middleware.Converters.Interface;
+using Middleware.Converters.Service;
 using Middleware.IoC;
 
 namespace Site
@@ -35,6 +37,7 @@ namespace Site
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddRouting(options => options.LowercaseUrls = true);
             RegisterContainer.RegisterDependencies(services);
+            services.AddScoped<IToastrMensagem, ToastrMensagem>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
