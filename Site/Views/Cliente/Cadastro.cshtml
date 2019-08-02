@@ -1,0 +1,65 @@
+﻿@model Data.Entities.Models.Cliente
+
+@{
+    ViewData["Title"] = "Cadastro de Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastro/Atualização de Cliente</h4>
+        <p class="card-description">
+            Informe os dados corretamente
+        </p>
+        <form class="@Url.Action("Cadastro")" method="post" enctype="multipart/form-data">
+            <div class="row">
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.DataCadastro)
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Nome do Cliente</label>
+                        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Nome Completo", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>RG</label>
+                        @Html.TextBoxFor(m => m.Rg, new { @class = "form-control", placeholder = "ex: 558721-9" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>CPF</label>
+                        @Html.TextBoxFor(m => m.Cpf, new { @class = "form-control cpf", placeholder = "ex: 123.456.789-19", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "ex: cliente@cliente.com.br" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        @Html.TextBoxFor(m => m.Endereco, new { @class = "form-control", placeholder = "Rua H, n° 365 - Cuiabá/MT" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Habilitado?</label>
+                        <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <input type="hidden" value="@Model.Ativo" id="hddAtivo" />
+                                <input type="checkbox" value="1" id="cbHabilitado" checked="checked" name="Ativo" />
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mr-2">Confirmar</button>
+            <a class="btn btn-light" href="@Url.Action("Clientes")">Cancelar</a>
+        </form>
+    </div>
+</div>

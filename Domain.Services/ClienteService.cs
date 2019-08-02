@@ -26,7 +26,10 @@ namespace Domain.Services
             if (cliente.Id > 0)
                 Db.Update(cliente);
             else
+            {
+                cliente.DataCadastro = DateTime.Now;
                 await DbSet.AddAsync(cliente);
+            }
 
             await Db.SaveChangesAsync();
             return cliente;
