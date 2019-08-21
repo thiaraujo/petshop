@@ -77,16 +77,18 @@ namespace Domain.Services
         public async Task<ProdutoViewModel> RegistroDoProduto(int produtoId)
         {
             var produto = await DbSet.FindAsync(produtoId);
-            var promocao = await Db.Promocao.FirstOrDefaultAsync(x =>
-                x.ProdutoId == produtoId && x.DataInicio <= DateTime.Now && x.DataFim >= DateTime.Now);
+            var promocao = await Db.PromocaoProdServ
+                .Include(x => x.Promocao)
+                .FirstOrDefaultAsync(x =>
+                x.ProdutoId == produtoId && x.Promocao.DataInicio <= DateTime.Now && x.Promocao.DataFim >= DateTime.Now);
 
             //Se tiver promoção, calcula o valor
             decimal valorComDesconto = 0;
             double descontoAplicado = 0;
             if (promocao != null)
             {
-                valorComDesconto = ((produto.Preco ?? 0) - ((produto.Preco ?? 0) * (promocao.Percentual ?? 0)) / 100);
-                descontoAplicado = Convert.ToDouble(promocao.Percentual);
+                valorComDesconto = ((produto.Preco ?? 0) - ((produto.Preco ?? 0) * (promocao.Promocao.Percentual ?? 0)) / 100);
+                descontoAplicado = Convert.ToDouble(promocao.Promocao.Percentual);
             }
 
             var produtoFinal = new ProdutoViewModel

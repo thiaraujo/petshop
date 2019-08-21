@@ -12,9 +12,9 @@ namespace Domain.Services
         {
         }
 
-        public async Task CadastraOuAtualiza(Promocao promocao)
+        public async Task<Promocao> CadastraOuAtualiza(Promocao promocao)
         {
-            if (promocao.ProdutoId.HasValue || promocao.ServicoId.HasValue)
+            if (promocao.DataInicio.HasValue && promocao.DataFim.HasValue)
             {
                 if (promocao.Id > 0)
                     Db.Update(promocao);
@@ -22,7 +22,11 @@ namespace Domain.Services
                     await DbSet.AddAsync(promocao);
 
                 await Db.SaveChangesAsync();
+
+                return promocao;
             }
+
+            return null;
         }
 
         public async Task<IEnumerable<Promocao>> ConsultaRegistros()

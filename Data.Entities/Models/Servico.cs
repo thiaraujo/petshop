@@ -8,7 +8,7 @@ namespace Data.Entities.Models
         public Servico()
         {
             Agendamento = new HashSet<Agendamento>();
-            Promocao = new HashSet<Promocao>();
+            PromocaoProdServ = new HashSet<PromocaoProdServ>();
             ServicoLog = new HashSet<ServicoLog>();
             ServicoProduto = new HashSet<ServicoProduto>();
             ServicoUsuario = new HashSet<ServicoUsuario>();
@@ -26,7 +26,7 @@ namespace Data.Entities.Models
         public int Ativo { get; set; }
 
         public virtual ICollection<Agendamento> Agendamento { get; set; }
-        public virtual ICollection<Promocao> Promocao { get; set; }
+        public virtual ICollection<PromocaoProdServ> PromocaoProdServ { get; set; }
         public virtual ICollection<ServicoLog> ServicoLog { get; set; }
         public virtual ICollection<ServicoProduto> ServicoProduto { get; set; }
         public virtual ICollection<ServicoUsuario> ServicoUsuario { get; set; }

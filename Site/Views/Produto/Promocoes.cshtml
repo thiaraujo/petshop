@@ -1,0 +1,59 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<Data.Entities.Models.Promocao>
+
+@{
+    ViewData["Title"] = "Promoções";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="">
+    <form action="@Url.Action("Promocoes")">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Procurar por uma promoção..." autofocus="autofocus" name="s" />
+            <span class="input-group-btn">
+                <button class="btn btn-info btn-lg" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <br />
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">
+            Promoções
+            <a href="@Url.Action("CadastroPromocao")" class="btn btn-outline-primary pull-right">Adicionar</a>
+        </h4>
+        <br />
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nome da Campanha</th>
+                        <th class="text-center">% de desconto</th>
+                        <th class="text-center">Dt. Início Vinculo</th>
+                        <th class="text-center">Dt. Fim Vinculo</th>
+                        <th class="text-center">#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Nome</td>
+                            <td class="text-center">@item.Percentual</td>
+                            <td class="text-center">@item.DataInicio?.ToShortDateString()</td>
+                            <td class="text-center">@item.DataFim?.ToShortDateString()</td>
+                            <td class="text-center">
+                                <a href="@Url.Action("CadastroPromocao", new {id = item.Id})" class="btn btn-xs btn-info" data-toggle="Editar Registro">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @Html.PagedListPager(Model, page => Url.Action("Promocoes", new { p = page }))
+        </div>
+    </div>
+</div>

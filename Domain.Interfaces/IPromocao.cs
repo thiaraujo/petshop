@@ -6,7 +6,7 @@ namespace Domain.Interfaces
 {
     public interface IPromocao : IBaseRepository<Promocao>
     {
-        Task CadastraOuAtualiza(Promocao promocao);
+        Task<Promocao> CadastraOuAtualiza(Promocao promocao);
         Task<IEnumerable<Promocao>> ConsultaRegistros();
     }
 }

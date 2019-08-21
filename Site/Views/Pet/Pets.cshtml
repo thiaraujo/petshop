@@ -1,0 +1,65 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<Data.Entities.Models.Animal>
+
+@{
+    ViewData["Title"] = "Pets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="">
+    <form action="@Url.Action("Pets")">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Procurar por animal..." autofocus="autofocus" name="s" />
+            <span class="input-group-btn">
+                <button class="btn btn-info btn-lg" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <br />
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">
+            Clientes
+            <a href="@Url.Action("Cadastro")" class="btn btn-outline-primary pull-right">Adicionar</a>
+        </h4>
+        <br />
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Pet</th>
+                        <th>Seu dono</th>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-center">Raça</th>
+                        <th class="text-center">Porte</th>
+                        <th class="text-center">Alergia(s)</th>
+                        <th class="text-center">Autoriza Divulg.</th>
+                        <th class="text-center">#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@item.Nome</td>
+                        <td>@item.Cliente?.Nome</td>
+                        <td class="text-center">@item.TipoAnimal?.Nome</td>
+                        <td class="text-center">@item.RacaAnimal?.Nome</td>
+                        <td class="text-center">@item.PorteAnimal?.Nome</td>
+                        <td class="text-center">@item.Alergia</td>
+                        <td class="text-center">@(item.AutorizaDivulgacao == 1 ? "Sim" : "Não")</td>
+                        <td class="text-center">
+                            <a href="@Url.Action("Cadastro", new {id = item.Id})" class="btn btn-xs btn-info" data-toggle="Editar Registro">
+                                <i class="fa fa-pencil-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            @Html.PagedListPager(Model, page => Url.Action("Pets", new { p = page }))
+        </div>
+    </div>
+</div>

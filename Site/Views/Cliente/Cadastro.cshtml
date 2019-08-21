@@ -11,8 +11,9 @@
         <p class="card-description">
             Informe os dados corretamente
         </p>
-        <form class="@Url.Action("Cadastro")" method="post" enctype="multipart/form-data">
+        <form action="@Url.Action("Cadastro")" method="post" enctype="multipart/form-data">
             <div class="row">
+                @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.Id)
                 @Html.HiddenFor(m => m.DataCadastro)
                 <div class="col-md-6">

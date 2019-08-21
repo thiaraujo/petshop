@@ -1,0 +1,83 @@
+﻿@model Data.Entities.Models.Animal
+
+@{
+    ViewData["Title"] = "Cadastro de Pet";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastro/Atualização de Pet</h4>
+        <p class="card-description">
+            Informe os dados corretamente
+        </p>
+        <form action="@Url.Action("Cadastro")" method="post" enctype="multipart/form-data">
+            <div class="row">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label>Nome do Pet</label>
+                        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "Nome e sobrenome", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="form-group">
+                        <label>Dono(responsável)</label>
+                        @Html.DropDownListFor(m => m.ClienteId, (SelectList)ViewBag.Cliente, "-- Selecione --", new { @class = "form-control select", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Tipo do Animal</label>
+                        @Html.DropDownListFor(m => m.TipoAnimalId, (SelectList)ViewBag.Tipo, "-- Selecione --", new { @class = "form-control select" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Raça do Animal</label>
+                        @Html.DropDownListFor(m => m.RacaAnimalId, (SelectList)ViewBag.Raca, "-- Selecione --", new { @class = "form-control select" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Porte do Animal</label><small>(cachorros)</small>
+                        @Html.DropDownListFor(m => m.PorteAnimalId, (SelectList)ViewBag.Porte, "-- Selecione --", new { @class = "form-control select" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Possui alguma alergia?</label>
+                        @Html.TextBoxFor(m => m.Alergia, new { @class = "form-control", placeholder = "Caso o animal possua, descreva suas alergias" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Possui alguma alergia?</label>
+                        @Html.TextAreaFor(m => m.Detalhes, new { @class = "form-control", placeholder = "Preencha aqui, informações relacionadas a tratamentos especiais", rows = "3" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Divulgação</label> <small>para redes sociais</small>
+                        <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <input type="hidden" value="@Model.AutorizaDivulgacao" id="hddAtivo" />
+                                <input type="checkbox" value="1" id="cbHabilitado" checked="checked" name="AutorizaDivulgacao" />
+                                Autorizo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mr-2">Confirmar</button>
+            <a class="btn btn-light" href="@Url.Action("Pets")">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script src="~/paginas/cadastro-pet.js"></script>
+}

@@ -188,7 +188,7 @@ namespace Domain.Services
                     var estoque = vendidos.FirstOrDefault(x => x.ProdutoId == item.Id);
                     if (estoque != null)
                     {
-                        item.Estoque = item.Estoque - estoque.Quantidade;
+                        item.Estoque = item.Estoque - estoque.Quantidade ?? 1;
                     }
                 }
                 Db.Produto.UpdateRange(produtosVendidos);

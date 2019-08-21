@@ -11,24 +11,29 @@
             theme: "classic"
         });
     }
+    if ($(".select").length) {
+        $(".select").select2({
+           
+        });
+    }
 });
 
 function showToastr(type, msg, titulo) {
     switch (type) {
-    case "ok" || 2:
-        toastr.success(msg, titulo);
-        break;
+        case "ok" || 2:
+            toastr.success(msg, titulo);
+            break;
 
-    case "erro" || 3:
-        toastr.error(msg, titulo);
-        break;
+        case "erro" || 3:
+            toastr.error(msg, titulo);
+            break;
 
-    case "aviso" || 4:
-        toastr.warning(msg, titulo);
-        break;
+        case "aviso" || 4:
+            toastr.warning(msg, titulo);
+            break;
 
-    default:
-        toastr.info(msg, titulo);
-        break;
+        default:
+            toastr.info(msg, titulo);
+            break;
     }
 }

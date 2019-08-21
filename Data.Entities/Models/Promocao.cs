@@ -5,14 +5,17 @@ namespace Data.Entities.Models
 {
     public partial class Promocao
     {
-        public int Id { get; set; }
-        public int? ProdutoId { get; set; }
-        public int? ServicoId { get; set; }
-        public decimal? Percentual { get; set; }
-        public DateTime DataInicio { get; set; }
-        public DateTime DataFim { get; set; }
+        public Promocao()
+        {
+            PromocaoProdServ = new HashSet<PromocaoProdServ>();
+        }
 
-        public virtual Produto Produto { get; set; }
-        public virtual Servico Servico { get; set; }
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public decimal? Percentual { get; set; }
+        public DateTime? DataInicio { get; set; }
+        public DateTime? DataFim { get; set; }
+
+        public virtual ICollection<PromocaoProdServ> PromocaoProdServ { get; set; }
     }
 }

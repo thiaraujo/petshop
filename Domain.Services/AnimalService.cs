@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Models;
+using Data.Entities.ViewModels;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

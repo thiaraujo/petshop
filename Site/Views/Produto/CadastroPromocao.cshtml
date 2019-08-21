@@ -1,0 +1,86 @@
+﻿@model Data.Entities.Models.Promocao
+
+@{
+    ViewData["Title"] = "Cadastro de Promoção";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastro/Atualização de Promoção</h4>
+        <p class="card-description">
+            Informe os dados corretamente
+        </p>
+        <form action="@Url.Action("CadastroPromocao")" method="post">
+            <div class="row">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Nome da Campanha</label>
+                        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", placeholder = "ex: Mês das raças de grande porte", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Início da Campanha</label>
+                        @Html.TextBoxFor(m => m.DataInicio, new { @class = "form-control date", placeholder = "__/__/___", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Fim da Campanha</label>
+                        @Html.TextBoxFor(m => m.DataFim, new { @class = "form-control date", placeholder = "__/__/___", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>% de desconto</label>
+                        @Html.TextBoxFor(m => m.Percentual, new { @class = "form-control", placeholder = "ex: 3%", required = "required", min = "0" })
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mr-2">Confirmar</button>
+            <a class="btn btn-light" href="@Url.Action("Promocoes")">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+<!-- Produtos e serviços que estão na promoção -->
+<br />
+@if (Model.Id > 0)
+{
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Produtos e Serviços da promoção</h4>
+            <p class="card-description">
+                Informe os dados corretamente
+            </p>
+            <form action="@Url.Action("CadastroPromocaoProdServ")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="hddRegistroId" value="@Model.Id" name="promocaoId" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Produtos</label>
+                            <select class="select-multiple w-100" multiple="multiple" id="ddlProdutos" style="width: 100%" name="produtos"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Serviços</label>
+                            <select class="select-multiple w-100" multiple="multiple" id="ddlServicos" style="width: 100%" name="servicos"></select>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success mr-2">Confirmar</button>
+                <a class="btn btn-light" href="@Url.Action("Promocoes")">Cancelar</a>
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts
+    {
+    <script src="~/paginas/cadastro-prod-promocao.js"></script>
+}

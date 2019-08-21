@@ -7,7 +7,7 @@ namespace Data.Entities.Models
     {
         public Produto()
         {
-            Promocao = new HashSet<Promocao>();
+            PromocaoProdServ = new HashSet<PromocaoProdServ>();
             ServicoProduto = new HashSet<ServicoProduto>();
             VendaProduto = new HashSet<VendaProduto>();
         }
@@ -20,10 +20,10 @@ namespace Data.Entities.Models
         public decimal? Preco { get; set; }
         public int? Estoque { get; set; }
         public DateTime DataCadastro { get; set; }
-        public string Foto { get; set; }
         public int Ativo { get; set; }
+        public string Foto { get; set; }
 
-        public virtual ICollection<Promocao> Promocao { get; set; }
+        public virtual ICollection<PromocaoProdServ> PromocaoProdServ { get; set; }
         public virtual ICollection<ServicoProduto> ServicoProduto { get; set; }
         public virtual ICollection<VendaProduto> VendaProduto { get; set; }
     }

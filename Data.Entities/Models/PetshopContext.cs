@@ -23,6 +23,7 @@ namespace Data.Entities.Models
         public virtual DbSet<PorteAnimal> PorteAnimal { get; set; }
         public virtual DbSet<Produto> Produto { get; set; }
         public virtual DbSet<Promocao> Promocao { get; set; }
+        public virtual DbSet<PromocaoProdServ> PromocaoProdServ { get; set; }
         public virtual DbSet<RacaAnimal> RacaAnimal { get; set; }
         public virtual DbSet<Servico> Servico { get; set; }
         public virtual DbSet<ServicoLog> ServicoLog { get; set; }
@@ -49,6 +50,7 @@ namespace Data.Entities.Models
 
                 // define the database to use
                 optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+
             }
         }
 
@@ -67,23 +69,23 @@ namespace Data.Entities.Models
                 entity.HasOne(d => d.Animal)
                     .WithMany(p => p.Agendamento)
                     .HasForeignKey(d => d.AnimalId)
-                    .HasConstraintName("FK__Agendamen__Anima__33D4B598");
+                    .HasConstraintName("FK__Agendamen__Anima__5EBF139D");
 
                 entity.HasOne(d => d.Cliente)
                     .WithMany(p => p.Agendamento)
                     .HasForeignKey(d => d.ClienteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Agendamen__Clien__32E0915F");
+                    .HasConstraintName("FK__Agendamen__Clien__5DCAEF64");
 
                 entity.HasOne(d => d.Servico)
                     .WithMany(p => p.Agendamento)
                     .HasForeignKey(d => d.ServicoId)
-                    .HasConstraintName("FK__Agendamen__Servi__34C8D9D1");
+                    .HasConstraintName("FK__Agendamen__Servi__5FB337D6");
 
                 entity.HasOne(d => d.Usuario)
                     .WithMany(p => p.Agendamento)
                     .HasForeignKey(d => d.UsuarioId)
-                    .HasConstraintName("FK__Agendamen__Usuar__35BCFE0A");
+                    .HasConstraintName("FK__Agendamen__Usuar__60A75C0F");
             });
 
             modelBuilder.Entity<Animal>(entity =>
@@ -104,22 +106,22 @@ namespace Data.Entities.Models
                     .WithMany(p => p.Animal)
                     .HasForeignKey(d => d.ClienteId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Animal__ClienteI__2C3393D0");
+                    .HasConstraintName("FK__Animal__ClienteI__571DF1D5");
 
                 entity.HasOne(d => d.PorteAnimal)
                     .WithMany(p => p.Animal)
                     .HasForeignKey(d => d.PorteAnimalId)
-                    .HasConstraintName("FK__Animal__PorteAni__2B3F6F97");
+                    .HasConstraintName("FK__Animal__PorteAni__5629CD9C");
 
                 entity.HasOne(d => d.RacaAnimal)
                     .WithMany(p => p.Animal)
                     .HasForeignKey(d => d.RacaAnimalId)
-                    .HasConstraintName("FK__Animal__RacaAnim__2A4B4B5E");
+                    .HasConstraintName("FK__Animal__RacaAnim__5535A963");
 
                 entity.HasOne(d => d.TipoAnimal)
                     .WithMany(p => p.Animal)
                     .HasForeignKey(d => d.TipoAnimalId)
-                    .HasConstraintName("FK__Animal__TipoAnim__29572725");
+                    .HasConstraintName("FK__Animal__TipoAnim__5441852A");
             });
 
             modelBuilder.Entity<Cliente>(entity =>
@@ -162,12 +164,12 @@ namespace Data.Entities.Models
 
                 entity.Property(e => e.Especificacao).HasColumnType("text");
 
-                entity.Property(e => e.Foto)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Fabricante)
                     .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Foto)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Nome)
@@ -180,21 +182,34 @@ namespace Data.Entities.Models
 
             modelBuilder.Entity<Promocao>(entity =>
             {
-                entity.Property(e => e.Percentual).HasColumnType("decimal(15, 2)");
+                entity.Property(e => e.DataFim).HasColumnType("date");
 
                 entity.Property(e => e.DataInicio).HasColumnType("date");
 
-                entity.Property(e => e.DataFim).HasColumnType("date");
+                entity.Property(e => e.Nome)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
 
+                entity.Property(e => e.Percentual).HasColumnType("decimal(15, 2)");
+            });
+
+            modelBuilder.Entity<PromocaoProdServ>(entity =>
+            {
                 entity.HasOne(d => d.Produto)
-                    .WithMany(p => p.Promocao)
+                    .WithMany(p => p.PromocaoProdServ)
                     .HasForeignKey(d => d.ProdutoId)
-                    .HasConstraintName("FK__Promocao__Produt__2F10007B");
+                    .HasConstraintName("FK__PromocaoP__Produ__05D8E0BE");
+
+                entity.HasOne(d => d.Promocao)
+                    .WithMany(p => p.PromocaoProdServ)
+                    .HasForeignKey(d => d.PromocaoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__PromocaoP__Promo__04E4BC85");
 
                 entity.HasOne(d => d.Servico)
-                    .WithMany(p => p.Promocao)
+                    .WithMany(p => p.PromocaoProdServ)
                     .HasForeignKey(d => d.ServicoId)
-                    .HasConstraintName("FK__Promocao__Servic__300424B4");
+                    .HasConstraintName("FK__PromocaoP__Servi__06CD04F7");
             });
 
             modelBuilder.Entity<RacaAnimal>(entity =>
@@ -229,13 +244,13 @@ namespace Data.Entities.Models
                     .WithMany(p => p.ServicoLog)
                     .HasForeignKey(d => d.ServicoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ServicoLo__Servi__1FCDBCEB");
+                    .HasConstraintName("FK__ServicoLo__Servi__4AB81AF0");
 
                 entity.HasOne(d => d.Usuario)
                     .WithMany(p => p.ServicoLog)
                     .HasForeignKey(d => d.UsuarioId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ServicoLo__Usuar__20C1E124");
+                    .HasConstraintName("FK__ServicoLo__Usuar__4BAC3F29");
             });
 
             modelBuilder.Entity<ServicoProduto>(entity =>
@@ -244,13 +259,13 @@ namespace Data.Entities.Models
                     .WithMany(p => p.ServicoProduto)
                     .HasForeignKey(d => d.ProdutoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ServicoPr__Produ__1BFD2C07");
+                    .HasConstraintName("FK__ServicoPr__Produ__46E78A0C");
 
                 entity.HasOne(d => d.Servico)
                     .WithMany(p => p.ServicoProduto)
                     .HasForeignKey(d => d.ServicoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ServicoPr__Servi__1CF15040");
+                    .HasConstraintName("FK__ServicoPr__Servi__47DBAE45");
             });
 
             modelBuilder.Entity<ServicoUsuario>(entity =>
@@ -259,13 +274,13 @@ namespace Data.Entities.Models
                     .WithMany(p => p.ServicoUsuario)
                     .HasForeignKey(d => d.ServicoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ServicoUs__Servi__49C3F6B7");
+                    .HasConstraintName("FK__ServicoUs__Servi__440B1D61");
 
                 entity.HasOne(d => d.Usuario)
                     .WithMany(p => p.ServicoUsuario)
                     .HasForeignKey(d => d.UsuarioId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ServicoUs__Usuar__48CFD27E");
+                    .HasConstraintName("FK__ServicoUs__Usuar__4316F928");
             });
 
             modelBuilder.Entity<TipoAnimal>(entity =>
@@ -315,13 +330,13 @@ namespace Data.Entities.Models
                     .WithMany(p => p.UsuarioEspecialidade)
                     .HasForeignKey(d => d.TipoAnimalId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UsuarioEs__TipoA__145C0A3F");
+                    .HasConstraintName("FK__UsuarioEs__TipoA__3B75D760");
 
                 entity.HasOne(d => d.Usuario)
                     .WithMany(p => p.UsuarioEspecialidade)
                     .HasForeignKey(d => d.UsuarioId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UsuarioEs__Usuar__15502E78");
+                    .HasConstraintName("FK__UsuarioEs__Usuar__3C69FB99");
             });
 
             modelBuilder.Entity<Venda>(entity =>
@@ -342,13 +357,13 @@ namespace Data.Entities.Models
                     .WithMany(p => p.Venda)
                     .HasForeignKey(d => d.AgendamentoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Venda__Agendamen__3A81B327");
+                    .HasConstraintName("FK__Venda__Agendamen__656C112C");
 
                 entity.HasOne(d => d.TipoPagamento)
                     .WithMany(p => p.Venda)
                     .HasForeignKey(d => d.TipoPagamentoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Venda__TipoPagam__3B75D760");
+                    .HasConstraintName("FK__Venda__TipoPagam__66603565");
             });
 
             modelBuilder.Entity<VendaAvaliacao>(entity =>
@@ -357,7 +372,7 @@ namespace Data.Entities.Models
                     .WithMany(p => p.VendaAvaliacao)
                     .HasForeignKey(d => d.VendaId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__VendaAval__Venda__45F365D3");
+                    .HasConstraintName("FK__VendaAval__Venda__70DDC3D8");
             });
 
             modelBuilder.Entity<VendaProduto>(entity =>
@@ -369,13 +384,13 @@ namespace Data.Entities.Models
                 entity.HasOne(d => d.Produto)
                     .WithMany(p => p.VendaProduto)
                     .HasForeignKey(d => d.ProdutoId)
-                    .HasConstraintName("FK__VendaProd__Produ__3F466844");
+                    .HasConstraintName("FK__VendaProd__Produ__6A30C649");
 
                 entity.HasOne(d => d.Venda)
                     .WithMany(p => p.VendaProduto)
                     .HasForeignKey(d => d.VendaId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__VendaProd__Venda__3E52440B");
+                    .HasConstraintName("FK__VendaProd__Venda__693CA210");
             });
 
             modelBuilder.Entity<VendaServico>(entity =>
@@ -387,13 +402,13 @@ namespace Data.Entities.Models
                 entity.HasOne(d => d.Servico)
                     .WithMany(p => p.VendaServico)
                     .HasForeignKey(d => d.ServicoId)
-                    .HasConstraintName("FK__VendaServ__Servi__4316F928");
+                    .HasConstraintName("FK__VendaServ__Servi__6E01572D");
 
                 entity.HasOne(d => d.Venda)
                     .WithMany(p => p.VendaServico)
                     .HasForeignKey(d => d.VendaId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__VendaServ__Venda__4222D4EF");
+                    .HasConstraintName("FK__VendaServ__Venda__6D0D32F4");
             });
         }
     }
