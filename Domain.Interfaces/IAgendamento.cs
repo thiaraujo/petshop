@@ -7,8 +7,8 @@ namespace Domain.Interfaces
 {
     public interface IAgendamento : IBaseRepository<Agendamento>
     {
-        Task<bool> HorarioAgendamentoDisponivel(int profissionalId, DateTime dataAgendado, TimeSpan horaAgendado, int servicoAgendadoId);
-        Task<IEnumerable<Usuario>> ConsultaProfissionalBaseadoNoServico(int servicoId);
+        Task<TimeSpan> HorarioAgendamentoDisponivel(int profissionalId, DateTime dataAgendado, TimeSpan horaAgendado, int servicoAgendadoId);
+        Task<bool> ConsultaProfissionalBaseadoNoAnimal(int animalId, int usuarioId);
         Task<Agendamento> CadastraOuAtualiza(Agendamento agendamento);
         Task AgendamentoCancelado(int agendamentoId);
         Task<IEnumerable<Agendamento>> ConsultaRegistros(int? profissionalId, DateTime? dataAgendamento);

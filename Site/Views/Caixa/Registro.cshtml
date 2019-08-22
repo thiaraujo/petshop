@@ -30,52 +30,66 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Cliente</label>
-                            <select class="form-control select" required="" name="ClienteId" id="ddlCliente" style="width: 100%"></select>
+            <form id="form-agendamento" method="post" action="javascript:void(0)">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Cliente</label>
+                                <select class="form-control select" required="" name="ClienteId" id="ddlCliente" style="width: 100%"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Pet</label>
-                            <select class="form-control select" required="" name="AnimalId" id="ddlAnimal" style="width: 100%"></select>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Pet</label>
+                                <select class="form-control select" required="" name="AnimalId" id="ddlAnimal" style="width: 100%" disabled=""></select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Serviço</label>
-                            <select class="form-control select" required="" name="ServicoId" id="ddlServico" style="width: 100%"></select>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Serviço</label>
+                                <select class="form-control select" required="" name="ServicoId" id="ddlServico" style="width: 100%;" disabled=""></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Dia</label>
-                            <input type="text" class="form-control date" required="" name="DiaMarcado" />
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Dia</label>
+                                <input type="text" class="form-control date" required="" name="DiaMarcado" id="txtData" disabled="" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Hora</label>
-                            <input type="text" class="form-control time" required="" name="HoraMarcado" />
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Hora</label>
+                                <input type="text" class="form-control time" required="" name="HoraMarcado" id="txtHora" disabled="" />
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Profissional</label>
-                            <select class="form-control select" required="" name="UsuarioId" id="ddlUsuario" style="width: 100%"></select>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Profissional</label>
+                                <select class="form-control select" required="" name="UsuarioId" id="ddlUsuario" style="width: 100%" disabled=""></select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Observação</label>
+                                <textarea id="txtObs" class="form-control" disabled="" name="Observacao" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div id="divEspecialidade"></div>
+                            <div id="divAgendamento"></div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" onclick="confirmarEstoque()">Confirmar</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success" id="btnConfirmar" disabled="">Confirmar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

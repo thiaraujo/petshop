@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Entities.Models;
 using Domain.Interfaces;
 using LazZiya.TagHelpers.Alerts;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +19,20 @@ namespace Site.Controllers
         private readonly IAnimal _animal;
         private readonly IServico _servico;
         private readonly IUsuario _usuario;
+        private readonly IUsuarioEspecialidade _especialidade;
+        private readonly IAgendamento _agendamento;
 
         public CaixaController(ICliente cliente,
             IAnimal animal,
             IServico servico,
-            IUsuario usuario)
+            IUsuario usuario, IUsuarioEspecialidade especialidade, IAgendamento agendamento)
         {
             _cliente = cliente;
             _animal = animal;
             _servico = servico;
             _usuario = usuario;
+            _especialidade = especialidade;
+            _agendamento = agendamento;
         }
 
         #endregion
@@ -80,6 +86,33 @@ namespace Site.Controllers
                 x.Id,
                 nome = x.Nome
             }).OrderBy(x => x.nome));
+        }
+
+        [HttpGet]
+        public async Task<bool> GetUsuariosEspecialidade(int animalId, int usuarioId)
+        {
+            return await _agendamento.ConsultaProfissionalBaseadoNoAnimal(animalId, usuarioId);
+        }
+
+        [HttpGet]
+        public async Task<TimeSpan> GetDisponivelAgendamento(int usuarioId, string data, string hora, int servicoId)
+        {
+            var dt = Convert.ToDateTime(data);
+            var time = TimeSpan.Parse(hora);
+
+            //pega os agendamentos baseados na data e no usuário
+            var agendamentos = await _agendamento.HorarioAgendamentoDisponivel(usuarioId, dt, time, servicoId);
+            return agendamentos;
+        }
+
+        #endregion
+
+        #region Json Post
+
+        public async Task<bool> PostAddAgendamento(Agendamento agendamento)
+        {
+            var result = await _agendamento.CadastraOuAtualiza(agendamento);
+            return result.Id > 0; //se for maior que zero, então cadastrou
         }
 
         #endregion

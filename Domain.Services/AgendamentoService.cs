@@ -16,14 +16,14 @@ namespace Domain.Services
 
         // Antes de confirmar o agendamento, é verificado se o agendamento pode ser concluído
         // Verifica se o profissional tem agenda disponível, baseado na data e na quantidade de tempo que o serviço exige
-        public async Task<bool> HorarioAgendamentoDisponivel(int profissionalId, DateTime dataAgendado, TimeSpan horaAgendado, int servicoAgendadoId)
+        public async Task<TimeSpan> HorarioAgendamentoDisponivel(int profissionalId, DateTime dataAgendado, TimeSpan horaAgendado, int servicoAgendadoId)
         {
             var servico = await Db.Servico.FindAsync(servicoAgendadoId);
             var agendamentos = await DbSet.Where(x => x.DiaMarcado == dataAgendado && x.UsuarioId == profissionalId).ToListAsync();
 
-            // Se não existir, retorna tru
+            // Se não existir, retorna true
             if (!agendamentos.Any())
-                return true;
+                return servico.TempoEstimado ?? TimeSpan.Zero;
 
             var tempoServico = servico.TempoEstimado?.Minutes ?? 10; //Se não tiver tempo estimado, sera o tempo de 10 minutos
             var minHora = horaAgendado;
@@ -31,15 +31,20 @@ namespace Domain.Services
 
             // Verifica se existe horário marcado no período da data
             var existeConflitoAgenda = agendamentos.FirstOrDefault(x => x.HoraMarcado >= minHora && x.HoraMarcado <= maxHora);
-            return existeConflitoAgenda == null;
+            if (existeConflitoAgenda != null) return TimeSpan.Zero;
+
+            return servico.TempoEstimado ?? TimeSpan.Zero;
         }
 
         // Baseado no serviço selecionado, consulta as areas que o profissional atual, sendo vet ou não
-        public async Task<IEnumerable<Usuario>> ConsultaProfissionalBaseadoNoServico(int servicoId)
+        public async Task<bool> ConsultaProfissionalBaseadoNoAnimal(int animalId, int usuarioId)
         {
-            var servicos = await Db.ServicoUsuario.Where(x => x.ServicoId == servicoId).ToListAsync();
-            var usuarios = await Db.Usuario.Where(x => servicos.Any(s => s.UsuarioId == x.Id)).ToListAsync();
-            return usuarios;
+            //Pega o tipo do animal
+            var tipoAnimal = await Db.Animal.FirstOrDefaultAsync(x => x.Id == animalId);
+
+            var especialidadePermitida = await Db.UsuarioEspecialidade.FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && x.TipoAnimalId == tipoAnimal.TipoAnimalId);
+
+            return especialidadePermitida != null; //se não diferente de null (true) então ele tem esta especialidade
         }
 
         // Faz pequenas validações no registro, se estiver tudo ok, registra e retorna o objeto salvo
