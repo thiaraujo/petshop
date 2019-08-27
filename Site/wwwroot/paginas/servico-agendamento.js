@@ -1,4 +1,7 @@
-﻿
+﻿$(document).ready(function () {
+    getAgendamentos();
+});
+
 function abrirModal() {
     $("#mdlTitle").text("Novo Agendamento");
 
@@ -34,7 +37,7 @@ $("#txtHora").change(function (e) {
     $("#ddlUsuario").attr("disabled", false);
 });
 
-function getClientes() {
+function getClientes(selected) {
 
     $("#ddlCliente > option").remove();
     var option;
@@ -47,15 +50,21 @@ function getClientes() {
                 });
 
             $("#ddlCliente").append(option);
+            if (selected !== "") {
+                $("#ddlCliente").val(selected);
+                $("#ddlCliente").trigger('change.select2');
+            }
         });
 
 }
 
-function getPets() {
+function getPets(selected) {
+
+    var id = selected !== "" ? selected : $("#ddlCliente").val();
 
     $("#ddlAnimal > option").remove();
     var option;
-    $.get("/caixa/GetPets", { clienteId: $("#ddlCliente").val() })
+    $.get("/caixa/GetPets", { clienteId: id })
         .done(function (response) {
             option = "<option>-- selecione --</option>";
             $.each(response,
@@ -64,12 +73,17 @@ function getPets() {
                 });
 
             $("#ddlAnimal").append(option);
-            $("#ddlAnimal").attr("disabled", false);
+            if (selected !== "") {
+                $("#ddlAnimal").val(selected);
+                $("#ddlAnimal").trigger('change.select2');
+                $("#ddlAnimal").attr("disabled", false);
+            } else
+                $("#ddlAnimal").attr("disabled", false);
         });
 
 }
 
-function getServicos() {
+function getServicos(selected) {
 
     $("#ddlServico > option").remove();
     var option;
@@ -82,11 +96,16 @@ function getServicos() {
                 });
 
             $("#ddlServico").append(option);
+            if (selected !== "") {
+                $("#ddlServico").val(selected);
+                $("#ddlServico").trigger('change.select2');
+                $("#ddlServico").attr("disabled", false);
+            }
         });
 
 }
 
-function getUsuarios() {
+function getUsuarios(selected) {
 
     $("#ddlUsuario > option").remove();
     var option;
@@ -99,6 +118,11 @@ function getUsuarios() {
                 });
 
             $("#ddlUsuario").append(option);
+            if (selected !== "") {
+                $("#ddlUsuario").val(selected);
+                $("#ddlUsuario").trigger('change.select2');
+                $("#ddlUsuario").attr("disabled", false);
+            }
         });
 
 }
@@ -143,6 +167,58 @@ function getDisponibilidadeAgenda() {
 
 }
 
+function getRegistroEdicao(id) {
+
+    $.get("/caixa/GetAgendamento", { id: id })
+        .done(function (response) {
+            //seta as variaveis
+            getClientes(response.clienteId);
+            getPets(response.animalId);
+            getServicos(response.servicoId);
+            getUsuarios(response.usuarioId);
+            $("#txtData").val(response.dia);
+            $("#txtData").attr("disabled", false);
+
+            $("#txtHora").val(response.hora);
+            $("#txtHora").attr("disabled", false);
+
+            $("#txtObs").val(response.obs);
+
+            $("#mdlTitle").text("Edição do agendamento: " + response.id);
+
+            $("#hddEdicaoId").val(response.id);
+            $("#btnConfirmar").attr("disabled", false);
+
+            $("#mdlAgendamento").modal("show");
+        });
+}
+
+function getAgendamentos() {
+
+    $("#tblAgendamentos > tbody > tr").remove();
+    var tr;
+
+    $.get("/caixa/GetAgendamentos")
+        .done(function (response) {
+            if (response.length < 1) {
+                $("#divSemAgendamento").show();
+            } else {
+                $.each(response,
+                    function (i, item) {
+                        tr += "<tr>" +
+                            "<td>" + item.pet + "</td>" +
+                            "<td>" + item.cliente + "</td>" +
+                            "<td class='text-center'>" + item.hora + "</td>" +
+                            "<td class='text-center'><button class='btn btn-xs btn-info' onclick='getRegistroEdicao(" + item.id + ")'>ver</button></td>" +
+                            "</tr>";
+                    });
+
+                $("#tblAgendamentos").append(tr);
+            }
+        });
+
+}
+
 $("#form-agendamento").submit(function (event) {
     event.preventDefault();
 
@@ -150,9 +226,11 @@ $("#form-agendamento").submit(function (event) {
         .done(function (status) {
             if (status === true) {
                 showToastr("ok", "Agendamento realizado com sucesso!", "Operação Confirmada");
+                getAgendamentos();
             } else {
                 showToastr("erro", "O agendamento não pôde ser confirmado!", "Operação Cancelada");
             }
+            $("#mdlAgendamento").modal("hide");
         })
         .fail(function (error) {
             console.log(error);

@@ -94,7 +94,7 @@ namespace Domain.Services
                 agendamentos = agendamentos.Where(x => x.UsuarioId == profissionalId).ToList();
 
             if (dataAgendamento.HasValue)
-                agendamentos = agendamentos.Where(x => x.DiaMarcado == dataAgendamento).ToList();
+                agendamentos = agendamentos.Where(x => x.DiaMarcado.Date == dataAgendamento.Value.Date).ToList();
 
             return agendamentos;
         }

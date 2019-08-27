@@ -12,10 +12,33 @@
         </div>
     </div>
 
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <label>Serviços Agendados</label>
+                <label>Serviços Agendados </label>
+                <small>@DateTime.Now.ToShortDateString()</small>
+                <table class="table table-striped table-hover" id="tblAgendamentos">
+                    <thead>
+                        <tr>
+                            <th>Pet</th>
+                            <th>Cliente</th>
+                            <th class="text-center">Hora</th>
+                            <th class="text-center">#</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="alert alert-info" id="divSemAgendamento" style="display: none">
+                    <label>Nenhum agendamento pendente!</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <label>Serviços Concluídos </label>
+                <small>@DateTime.Now.ToShortDateString()</small>
             </div>
         </div>
     </div>
@@ -32,6 +55,7 @@
             </div>
             <form id="form-agendamento" method="post" action="javascript:void(0)">
                 <div class="modal-body">
+                    <input type="hidden" name="Id" id="hddEdicaoId" />
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -75,7 +99,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Observação</label>
-                                <textarea id="txtObs" class="form-control" disabled="" name="Observacao" rows="3"></textarea>
+                                <textarea id="txtObs" class="form-control" name="Observacao" rows="3"></textarea>
                             </div>
                         </div>
 

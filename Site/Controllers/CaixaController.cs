@@ -6,6 +6,7 @@ using Data.Entities.Models;
 using Domain.Interfaces;
 using LazZiya.TagHelpers.Alerts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2;
 using Site.Abstraction;
 using Site.Models;
 
@@ -103,6 +104,43 @@ namespace Site.Controllers
             //pega os agendamentos baseados na data e no usuário
             var agendamentos = await _agendamento.HorarioAgendamentoDisponivel(usuarioId, dt, time, servicoId);
             return agendamentos;
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAgendamento(int id)
+        {
+            var agendamento = await _agendamento.GetByIdAsync(id);
+
+            var dinamica = new
+            {
+                id = agendamento.Id,
+                animalId = agendamento.AnimalId,
+                clienteId = agendamento.ClienteId,
+                servicoId = agendamento.ServicoId,
+                usuarioId = agendamento.UsuarioId,
+                obs = agendamento.Observacao,
+                dia = agendamento.DiaMarcado.ToShortDateString(),
+                hora = agendamento.HoraMarcado
+            };
+
+            return Json(dinamica);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAgendamentos()
+        {
+            var agendamentos = await _agendamento.ConsultaRegistros(null, DateTime.Now.Date);
+
+            var reultadoJson = agendamentos.Select(x => new
+            {
+                id = x.Id,
+                pet = x.Animal.Nome,
+                cliente = x.Cliente.Nome,
+                hora = x.HoraMarcado.ToString("g"),
+                horaFull = x.HoraMarcado
+            }).OrderBy(x => x.horaFull).ToList();
+
+            return Json(reultadoJson);
         }
 
         #endregion
