@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Data.Entities.Models;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Middleware.Converters.Interface;
 using Site.Abstraction;
 using Site.Models;
 
@@ -25,6 +26,7 @@ namespace Site.Controllers
         private readonly IProduto _produtos;
         private readonly IVenda _venda;
         private readonly IAgendamento _agendamento;
+        private readonly IToastrMensagem _toastr;
 
         public CaixaController(ICliente cliente,
             IAnimal animal,
@@ -36,7 +38,7 @@ namespace Site.Controllers
             IProduto produtos,
             IPromocaoProdServ promocao,
             IVendaProduto vendaProduto,
-            IVenda venda)
+            IVenda venda, IToastrMensagem toastr)
         {
             _cliente = cliente;
             _animal = animal;
@@ -49,6 +51,7 @@ namespace Site.Controllers
             _promocao = promocao;
             _vendaProduto = vendaProduto;
             _venda = venda;
+            _toastr = toastr;
         }
 
         #endregion
@@ -56,6 +59,35 @@ namespace Site.Controllers
         public IActionResult Registro()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmarVenda(Venda venda)
+        {
+            var produtos = await _vendaProduto.GetAllAsync(x => x.AgendamentoId == venda.AgendamentoId);
+            var agendamento = await _agendamento.GetByIdAsync(venda.AgendamentoId);
+
+            decimal valor = 0;
+            decimal? desconto = 0;
+
+            foreach (var item in produtos)
+            {
+                valor += item.Valor * (item.Quantidade ?? 1);
+                desconto += item.ValorComDesconto.HasValue ? (item.ValorComDesconto * (item.Quantidade ?? 1)) : 0;
+            }
+
+            venda.ValorProdutos = valor;
+            venda.ValorProdutosDesconto = desconto;
+            venda.ValorServico = agendamento.Servico.Preco;
+
+            //Se a opção for pataz, é porque possui saldo, então não cobra o valor do serviço
+            if (venda.TipoPagamentoId == 4)
+                venda.ValorServico = 0;
+
+            await _venda.ConcretizaVenda(venda);
+            Toastr(_toastr.RegistroConfirmado());
+
+            return RedirectToAction("Registro");
         }
 
         #region Json Aux
@@ -244,7 +276,6 @@ namespace Site.Controllers
             valor += servico.Servico.Preco;
             var total = valor - (desconto ?? 0);
 
-
             var result = new { total = total.ToString("N"), desconto = (desconto ?? 0).ToString("N") };
             return Json(result);
         }
@@ -281,7 +312,7 @@ namespace Site.Controllers
             }
 
             //se chegou aqui, então salva
-            await _vendaProduto.AddAsync(vendaProduto);
+            await _venda.RegistraVendaProduto(vendaProduto);
             return true;
         }
 

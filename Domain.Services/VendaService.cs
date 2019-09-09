@@ -41,24 +41,9 @@ namespace Domain.Services
             await Db.SaveChangesAsync();
         }
 
-        public async Task RegistraVendaProduto(IEnumerable<ProdutoViewModel> produtos, int agendamentoId)
+        public async Task RegistraVendaProduto(VendaProduto produto)
         {
-            var registro = await Db.Agendamento.FindAsync(agendamentoId);
-
-            if (registro == null) return;
-
-            var vendaProdutos = new List<VendaProduto>();
-            foreach (var item in produtos)
-            {
-                vendaProdutos.Add(new VendaProduto
-                {
-                    ProdutoId = item.ProdutoId,
-                    Valor = item.Preco ?? 0,
-                    ValorComDesconto = item.PrecoComDesconto ?? 0,
-                });
-            }
-
-            await Db.VendaProduto.AddRangeAsync(vendaProdutos);
+            await Db.VendaProduto.AddAsync(produto);
             await Db.SaveChangesAsync();
         }
 
@@ -84,32 +69,12 @@ namespace Domain.Services
         }
 
         // Se chegar aqui, faz as baixas no estoque
-        public async Task<string> ConcretizaVenda(decimal valorPago, int? pontosUtilizados, int vendaId)
+        public async Task<string> ConcretizaVenda(Venda venda)
         {
-            var registro = await DbSet.FindAsync(vendaId);
-
-            if (registro == null) return null;
-
-            //Se o pagamento for com pataz, verifica se o cliente pode prosseguir
-            var pataz = await CalculaPatazRecebidoOuNecessario(registro.AgendamentoId);
-            if (pontosUtilizados.HasValue && pontosUtilizados.Value > 0)
-            {
-                if (pontosUtilizados < pataz)
-                    return "Cliente não possui saldo suficiente no programa Pataz!";
-            }
-
-            registro.ValorPago = valorPago;
-            registro.ValorProdutos = await ValorEmProdutos(registro.AgendamentoId);
-            registro.ValorProdutosDesconto = await ValorEmProdutosComDesconto(registro.AgendamentoId);
-            registro.ValorServico = await ValorEmServicos(registro.AgendamentoId);
-            registro.ValorServicoDesconto = await ValorEmServicosComDesconto(registro.AgendamentoId);
-            registro.PatazTotalRecebido = pataz;
-
-            Db.Update(registro);
+            await DbSet.AddAsync(venda);
             await Db.SaveChangesAsync();
-
             //Baixa no estoque
-            await BaixaNoEstoque(vendaId);
+            await BaixaNoEstoque(venda.Id);
 
             return "Venda realizada com sucesso!";
         }
