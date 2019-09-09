@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Models;
 using Domain.Interfaces;
-using LazZiya.TagHelpers.Alerts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http2;
 using Site.Abstraction;
 using Site.Models;
 
@@ -21,12 +19,24 @@ namespace Site.Controllers
         private readonly IServico _servico;
         private readonly IUsuario _usuario;
         private readonly IUsuarioEspecialidade _especialidade;
+        private readonly IPromocaoProdServ _promocao;
+        private readonly ITipoPagamento _tipoPagamento;
+        private readonly IVendaProduto _vendaProduto;
+        private readonly IProduto _produtos;
+        private readonly IVenda _venda;
         private readonly IAgendamento _agendamento;
 
         public CaixaController(ICliente cliente,
             IAnimal animal,
             IServico servico,
-            IUsuario usuario, IUsuarioEspecialidade especialidade, IAgendamento agendamento)
+            IUsuario usuario,
+            IUsuarioEspecialidade especialidade,
+            IAgendamento agendamento,
+            ITipoPagamento tipoPagamento,
+            IProduto produtos,
+            IPromocaoProdServ promocao,
+            IVendaProduto vendaProduto,
+            IVenda venda)
         {
             _cliente = cliente;
             _animal = animal;
@@ -34,6 +44,11 @@ namespace Site.Controllers
             _usuario = usuario;
             _especialidade = especialidade;
             _agendamento = agendamento;
+            _tipoPagamento = tipoPagamento;
+            _produtos = produtos;
+            _promocao = promocao;
+            _vendaProduto = vendaProduto;
+            _venda = venda;
         }
 
         #endregion
@@ -143,6 +158,97 @@ namespace Site.Controllers
             return Json(reultadoJson);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetPagamentoDetalhes(int id)
+        {
+            var servico = await _agendamento.GetByIdAsync(id);
+            var agendamentos = await _agendamento.GetAllAsync(x => x.ClienteId == servico.ClienteId);
+
+            //Se tiver pataz, calcula quantos ele tem
+            var pz = 0;
+            if (agendamentos.Any())
+            {
+                var pataz = await _venda.GetAllAsync(x => agendamentos.Any(a => a.Id == x.AgendamentoId));
+                if (pataz.Any())
+                {
+                    pz = pataz.Sum(x => x.PatazTotalRecebido ?? 0);
+                }
+            }
+
+            var result = new
+            {
+                cliente = servico.Cliente.Nome,
+                pet = servico.Animal.Nome,
+                servico = servico.Servico.Nome,
+                valor = servico.Servico.Preco.ToString("N"),
+                pataz = pz,
+                pzNecessario = servico.Servico.PatazNecessario ?? 0,
+                pzFinal = servico.Servico.PatazRecebido ?? 0
+            };
+            return Json(result);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetTipoPagamento()
+        {
+            var tipo = await _tipoPagamento.GetAllAsync();
+            return Json(tipo.OrderBy(x => x.Nome));
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetProdutos()
+        {
+            var produtos = await _produtos.GetAllAsync(x => x.Ativo == 1);
+            var result = produtos.Select(x => new
+            {
+                id = x.Id,
+                nome = x.Nome + " [" + x.Preco?.ToString("N") + "]"
+            });
+
+            return Json(result.OrderBy(x => x.id));
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetProdutosVenda(int id)
+        {
+            var produtos = await _vendaProduto.GetAllAsync(x => x.AgendamentoId == id);
+
+            var result = produtos.Select(x => new
+            {
+                id = x.Id,
+                produto = x.Produto.Nome,
+                quantidade = x.Quantidade,
+                valor = x.Valor.ToString("N"),
+                desconto = x.ValorComDesconto.HasValue ? x.ValorComDesconto.Value.ToString("N") : "-",
+                total = (x.ValorComDesconto.HasValue ? (x.ValorComDesconto * x.Quantidade) : (x.Valor * x.Quantidade))?.ToString("N")
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetValorTotal(int id)
+        {
+            var produtos = await _vendaProduto.GetAllAsync(x => x.AgendamentoId == id);
+            var servico = await _agendamento.GetByIdAsync(id);
+
+            decimal valor = 0;
+            decimal? desconto = 0;
+
+            foreach (var item in produtos)
+            {
+                valor += item.Valor * (item.Quantidade ?? 1);
+                desconto += item.ValorComDesconto.HasValue ? (item.ValorComDesconto * (item.Quantidade ?? 1)) : 0;
+            }
+
+            valor += servico.Servico.Preco;
+            var total = valor - (desconto ?? 0);
+
+
+            var result = new { total = total.ToString("N"), desconto = (desconto ?? 0).ToString("N") };
+            return Json(result);
+        }
+
         #endregion
 
         #region Json Post
@@ -151,6 +257,32 @@ namespace Site.Controllers
         {
             var result = await _agendamento.CadastraOuAtualiza(agendamento);
             return result.Id > 0; //se for maior que zero, então cadastrou
+        }
+
+        [HttpPost]
+        public async Task<bool> PostAddProduto(VendaProduto vendaProduto)
+        {
+            if (vendaProduto.AgendamentoId < 1 || vendaProduto.ProdutoId < 1)
+                return false;
+
+            //Calcula os valores
+            var valores = await _produtos.GetByIdAsync(vendaProduto.ProdutoId.Value);
+            vendaProduto.Valor = valores.Preco ?? 0;
+            //Pega as promoções baseadas no produto
+            var promocao = await _promocao.GetByIdAsync(x => x.ProdutoId == vendaProduto.ProdutoId);
+            //Se tiver promoção, verifica se esta no prazo indicado
+            if (promocao != null)
+            {
+                if (DateTime.Now >= promocao.Promocao.DataInicio && DateTime.Now <= promocao.Promocao.DataFim)
+                {
+                    vendaProduto.ValorComDesconto = (vendaProduto.Valor * promocao.Promocao.Percentual) / 100;
+                    vendaProduto.ValorComDesconto = vendaProduto.Valor - vendaProduto.ValorComDesconto;
+                }
+            }
+
+            //se chegou aqui, então salva
+            await _vendaProduto.AddAsync(vendaProduto);
+            return true;
         }
 
         #endregion

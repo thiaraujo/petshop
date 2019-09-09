@@ -118,6 +118,134 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="mdlPagamento" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="max-width: 1024px; width: 1024px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mdlTitlePagamento"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form-pagamento" method="post" action="javascript:void(0)">
+                <div class="modal-body">
+                    <input type="hidden" name="AgendamentoId" id="hddEdicaoIdPag" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Cliente</label>
+                                <input type="text" class="form-control" disabled="disabled" id="txtCliente" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Pet</label>
+                                <input type="text" class="form-control" disabled="disabled" id="txtPet" />
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label>Serviços</label>
+                                <input type="text" class="form-control" disabled="disabled" id="txtServico" />
+                                <small>Pataz a serem recebidos ao final: <span id="spPzFinal"></span></small>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Valor</label>
+                                <input type="text" class="form-control" disabled="disabled" id="txtValorServico" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <h5>Produtos incluídos no serviço</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Produto</label>
+                                <select class="form-control" id="ddlProdutos">
+                                    <option>-- Selecione --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Quantidade</label>
+                                <input type="number" class="form-control" placeholder="Qtd" id="txtQuantidade" />
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="margin-top: 29px;">
+                            <div class="form-group">
+                                <button class="btn btn-outline-primary" type="button" onclick="confirmarProduto()">Confirmar</button>
+                            </div>
+                        </div>
+                        <table class="table table-hover" id="tblProdutos">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th class="text-center">Preço</th>
+                                    <th class="text-center">Com Desconto</th>
+                                    <th class="text-center">Quantidade</th>
+                                    <th class="text-center">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                        <div class="col-md-12">
+                            <br />
+                            <h5>Pagamento</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Forma de Pagamento</label>
+                                <select class="form-control" id="ddlTipoPagamento" name="TipoPagamentoId"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Valor Total</label>
+                                <input type="text" class="form-control money" placeholder="R$ 25,00" id="txtValorTotal" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Descontos</label>
+                                <input type="text" class="form-control money" placeholder="R$ 25,00" id="txtValorDescontos" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Valor Pago</label>
+                                <input type="text" class="form-control money" placeholder="R$ 25,00" id="txtValorPago" name="ValorPago" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Pataz disponível</label>
+                                <input type="text" class="form-control" placeholder="0" id="txtPz" disabled="" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Pataz Necessário</label>
+                                <input type="text" class="form-control" placeholder="0" id="txtPzNecessario" disabled="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">Cliente Ausente?</button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section scripts{
     <script src="~/paginas/servico-agendamento.js"></script>
 }

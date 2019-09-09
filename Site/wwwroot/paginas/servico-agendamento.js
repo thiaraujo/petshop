@@ -60,7 +60,7 @@ function getClientes(selected) {
 
 function getPets(selected) {
 
-    var id = selected !== "" ? selected : $("#ddlCliente").val();
+    var id = selected !== undefined ? selected : $("#ddlCliente").val();
 
     $("#ddlAnimal > option").remove();
     var option;
@@ -159,7 +159,7 @@ function getDisponibilidadeAgenda() {
             if (status !== "00:00:00") {
                 $("#divAgendamento").append("p").prop("id", "disponivel").text("Este profissional estará disponível para o atendimento e o tempo estimado será de: " + status + ".").addClass("alert alert-info");
                 $("#btnConfirmar").attr("disabled", false);
-                $("#txtObs").attr("disabled", true);
+                $("#txtObs").attr("disabled", false);
             } else {
                 $("#divAgendamento").append("p").prop("id", "disponivel").text("Este profissional não estará disponível para o atendimento.").addClass("alert alert-warning");
             }
@@ -209,14 +209,136 @@ function getAgendamentos() {
                             "<td>" + item.pet + "</td>" +
                             "<td>" + item.cliente + "</td>" +
                             "<td class='text-center'>" + item.hora + "</td>" +
-                            "<td class='text-center'><button class='btn btn-xs btn-info' onclick='getRegistroEdicao(" + item.id + ")'>ver</button></td>" +
+                            "<td class='text-center'>" +
+                            "<button class='btn btn-xs btn-info' onclick='getRegistroEdicao(" + item.id + ")' title='Visualizar detalhes'><i class='fa fa-edit'></i></button>" +
+                            "<button class='btn btn-xs btn-success' onclick='abrirPagamento(" + item.id + ")' title='Realizar o pagamento'><i class='fa fa-credit-card'></i></button>" +
+                            "</td>" +
                             "</tr>";
                     });
 
                 $("#tblAgendamentos").append(tr);
+                $("#divSemAgendamento").hide();
             }
         });
 
+}
+
+function abrirPagamento(id) {
+
+    $.get("/caixa/GetPagamentoDetalhes", { id: id })
+        .done(function (response) {
+            $("#mdlTitlePagamento").text("Pagamento do agendamento " + id);
+
+            $("#hddEdicaoIdPag").val(id);
+            $("#txtCliente").val(response.cliente);
+            $("#txtPet").val(response.pet);
+            $("#txtServico").val(response.servico);
+            $("#txtValorServico").val(response.valor);
+            $("#txtPz").val(response.pz);
+            $("#spPzFinal").text(response.pzFinal);
+            $("#txtPzNecessario").val(response.pzNecessario);
+
+            getProdutos();
+            carregaProdutosVenda(id);
+        });
+
+    $("#mdlPagamento").modal("show");
+}
+
+function getProdutos() {
+    $("#ddlProdutos > option").remove();
+
+    var op;
+    $.get("caixa/GetProdutos")
+        .done(function (response) {
+            op = "<option>-- selecione --</option>";
+            $.each(response, function (i, item) {
+                op += "<option value='" + item.id + "'>" + item.nome + "</option>";
+            });
+            $("#ddlProdutos").append(op);
+        });
+}
+
+function getTipoPagamento() {
+    $("#ddlTipoPagamento > option").remove();
+
+    //tem pataz suficiente para habilitar a opção
+    var necessario = $("#txtPzNecessario").val();
+    var possui = $("#txtPz").val();
+    var temPz = false;
+    if (parseInt(necessario === "" ? 0 : necessario) <= parseInt(possui === "" ? 0 : possui))
+        temPz = true;
+
+    var op;
+    $.get("caixa/GetTipoPagamento")
+        .done(function (response) {
+            op = "<option>-- selecione --</option>";
+            $.each(response, function (i, item) {
+                if (item.nome.indexOf("Pataz") > 0) {
+                    if (temPz === false) {
+                        op += "<option value='" + item.id + "' disabled=''>" + item.nome + "</option>";
+                    }
+                } else
+                    op += "<option value='" + item.id + "'>" + item.nome + "</option>";
+            });
+            $("#ddlTipoPagamento").append(op);
+        });
+}
+
+function confirmarProduto() {
+    var produtoId = $("#ddlProdutos").val();
+    var qtd = $("#txtQuantidade").val();
+    var agendamento = $("#hddEdicaoIdPag").val();
+
+    var venda = {
+        AgendamentoId: agendamento,
+        ProdutoId: produtoId,
+        Quantidade: qtd
+    };
+
+    $.post("/caixa/PostAddProduto", venda)
+        .done(function (response) {
+            if (response === true) {
+                showToastr("ok", "Produto adicionado com sucesso!", "Operação Confirmada");
+                carregaProdutosVenda(agendamento);
+            } else {
+                showToastr("erro", "Não foi possível adicioanr este produto!", "Operação Cancelada");
+            }
+        });
+
+}
+
+function carregaProdutosVenda(id) {
+
+    $("#tblProdutos > tbody > tr").remove();
+    var tr;
+    $.get("/caixa/GetProdutosVenda", { id: id })
+        .done(function (response) {
+
+            $.each(response, function (i, item) {
+                tr += "<tr>" +
+                    "<td>" + item.produto + "</td>" +
+                    "<td class='text-center'>" + item.valor + "</td>" +
+                    "<td class='text-center'>" + item.desconto + "</td>" +
+                    "<td class='text-center'>" + item.quantidade + "</td>" +
+                    "<td class='text-center'>" + item.total + "</td>" +
+                    "</tr>";
+            });
+
+            getValorServico(id);
+            $("#tblProdutos").append(tr);
+
+            getTipoPagamento();
+        });
+
+}
+
+function getValorServico(id) {
+    $.get("caixa/GetValorTotal", { id: id })
+        .done(function (response) {
+            $("#txtValorTotal").val(response.total);
+            $("#txtValorDescontos").val(response.desconto);
+        });
 }
 
 $("#form-agendamento").submit(function (event) {

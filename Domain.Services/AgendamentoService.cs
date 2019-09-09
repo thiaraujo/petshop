@@ -14,6 +14,15 @@ namespace Domain.Services
         {
         }
 
+        async Task<Agendamento> IBaseRepository<Agendamento>.GetByIdAsync(int id)
+        {
+            return await DbSet
+                .Include(x => x.Cliente)
+                .Include(x => x.Animal)
+                .Include(x => x.Servico)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         // Antes de confirmar o agendamento, é verificado se o agendamento pode ser concluído
         // Verifica se o profissional tem agenda disponível, baseado na data e na quantidade de tempo que o serviço exige
         public async Task<TimeSpan> HorarioAgendamentoDisponivel(int profissionalId, DateTime dataAgendado, TimeSpan horaAgendado, int servicoAgendadoId)

@@ -28,6 +28,7 @@ namespace Middleware.IoC
             services.AddScoped<ITipoAnimal, TipoAnimalService>();
             services.AddScoped<ITipoPagamento, TipoPagamentoService>();
             services.AddScoped<IVenda, VendaService>();
+            services.AddScoped<IVendaProduto, VendaProdutoService>();
         }
     }
 }

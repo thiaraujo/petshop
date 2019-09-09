@@ -41,9 +41,9 @@ namespace Domain.Services
             await Db.SaveChangesAsync();
         }
 
-        public async Task RegistraVendaProduto(IEnumerable<ProdutoViewModel> produtos, int vendaId)
+        public async Task RegistraVendaProduto(IEnumerable<ProdutoViewModel> produtos, int agendamentoId)
         {
-            var registro = await DbSet.FindAsync(vendaId);
+            var registro = await Db.Agendamento.FindAsync(agendamentoId);
 
             if (registro == null) return;
 
@@ -55,7 +55,6 @@ namespace Domain.Services
                     ProdutoId = item.ProdutoId,
                     Valor = item.Preco ?? 0,
                     ValorComDesconto = item.PrecoComDesconto ?? 0,
-                    VendaId = vendaId
                 });
             }
 
@@ -63,9 +62,9 @@ namespace Domain.Services
             await Db.SaveChangesAsync();
         }
 
-        public async Task RegistraVendaServico(IEnumerable<ServicoViewModel> servicos, int vendaId)
+        public async Task RegistraVendaServico(IEnumerable<ServicoViewModel> servicos, int agendamentoId)
         {
-            var registro = await DbSet.FindAsync(vendaId);
+            var registro = await Db.Agendamento.FindAsync(agendamentoId);
 
             if (registro == null) return;
 
@@ -92,7 +91,7 @@ namespace Domain.Services
             if (registro == null) return null;
 
             //Se o pagamento for com pataz, verifica se o cliente pode prosseguir
-            var pataz = await CalculaPatazRecebidoOuNecessario(vendaId);
+            var pataz = await CalculaPatazRecebidoOuNecessario(registro.AgendamentoId);
             if (pontosUtilizados.HasValue && pontosUtilizados.Value > 0)
             {
                 if (pontosUtilizados < pataz)
@@ -100,10 +99,10 @@ namespace Domain.Services
             }
 
             registro.ValorPago = valorPago;
-            registro.ValorProdutos = await ValorEmProdutos(vendaId);
-            registro.ValorProdutosDesconto = await ValorEmProdutosComDesconto(vendaId);
-            registro.ValorServico = await ValorEmServicos(vendaId);
-            registro.ValorServicoDesconto = await ValorEmServicosComDesconto(vendaId);
+            registro.ValorProdutos = await ValorEmProdutos(registro.AgendamentoId);
+            registro.ValorProdutosDesconto = await ValorEmProdutosComDesconto(registro.AgendamentoId);
+            registro.ValorServico = await ValorEmServicos(registro.AgendamentoId);
+            registro.ValorServicoDesconto = await ValorEmServicosComDesconto(registro.AgendamentoId);
             registro.PatazTotalRecebido = pataz;
 
             Db.Update(registro);
@@ -115,9 +114,9 @@ namespace Domain.Services
             return "Venda realizada com sucesso!";
         }
 
-        private async Task<decimal> ValorEmProdutos(int vendaId)
+        private async Task<decimal> ValorEmProdutos(int agendamentoid)
         {
-            var vendidos = await Db.VendaProduto.Where(x => x.VendaId == vendaId).ToListAsync();
+            var vendidos = await Db.VendaProduto.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
             if (vendidos.Any())
             {
                 var valores = vendidos.Where(x => !x.ValorComDesconto.HasValue).Sum(x => x.Valor);
@@ -128,9 +127,9 @@ namespace Domain.Services
             return 0;
         }
 
-        private async Task<decimal> ValorEmProdutosComDesconto(int vendaId)
+        private async Task<decimal> ValorEmProdutosComDesconto(int agendamentoid)
         {
-            var vendidos = await Db.VendaProduto.Where(x => x.VendaId == vendaId).ToListAsync();
+            var vendidos = await Db.VendaProduto.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
             if (vendidos.Any())
             {
                 var valoresComDesconto = vendidos.Where(x => x.ValorComDesconto.HasValue).Sum(x => x.ValorComDesconto);
@@ -141,9 +140,9 @@ namespace Domain.Services
             return 0;
         }
 
-        private async Task<decimal> ValorEmServicos(int vendaId)
+        private async Task<decimal> ValorEmServicos(int agendamentoid)
         {
-            var vendidos = await Db.VendaServico.Where(x => x.VendaId == vendaId).ToListAsync();
+            var vendidos = await Db.VendaServico.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
             if (vendidos.Any())
             {
                 var valores = vendidos.Where(x => !x.ValorComDesconto.HasValue).Sum(x => x.Valor);
@@ -154,9 +153,9 @@ namespace Domain.Services
             return 0;
         }
 
-        private async Task<decimal> ValorEmServicosComDesconto(int vendaId)
+        private async Task<decimal> ValorEmServicosComDesconto(int agendamentoid)
         {
-            var vendidos = await Db.VendaServico.Where(x => x.VendaId == vendaId).ToListAsync();
+            var vendidos = await Db.VendaServico.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
             if (vendidos.Any())
             {
                 var valoresComDesconto = vendidos.Where(x => x.ValorComDesconto.HasValue).Sum(x => x.ValorComDesconto);
@@ -167,19 +166,19 @@ namespace Domain.Services
             return 0;
         }
 
-        private async Task<int> CalculaPatazRecebidoOuNecessario(int vendaId)
+        private async Task<int> CalculaPatazRecebidoOuNecessario(int agendamentoid)
         {
             var servicos = await Db.VendaServico
                 .Include(x => x.Servico)
-                .Where(x => x.VendaId == vendaId).ToListAsync();
+                .Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
 
             var pataz = servicos.Sum(x => x.Servico.PatazRecebido);
             return pataz ?? 0;
         }
 
-        private async Task BaixaNoEstoque(int vendaId)
+        private async Task BaixaNoEstoque(int agendamentoid)
         {
-            var vendidos = await Db.VendaProduto.Where(x => x.VendaId == vendaId).ToListAsync();
+            var vendidos = await Db.VendaProduto.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
             if (vendidos.Any())
             {
                 var produtosVendidos = await Db.Produto.Where(x => vendidos.Any(v => v.ProdutoId == x.Id)).ToListAsync();
@@ -201,9 +200,7 @@ namespace Domain.Services
             var vendas = await DbSet
                 .Include(x => x.Agendamento)
                 .Include(x => x.TipoPagamento)
-                .Include(x => x.VendaAvaliacao)
-                .Include(x => x.VendaProduto)
-                .Include(x => x.VendaServico)
+                .Include(x => x.Agendamento.VendaProduto)
                 .ToListAsync();
 
             return vendas;

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Data.Entities.Models;
 using Domain.Interfaces;
@@ -11,6 +13,22 @@ namespace Domain.Services
     {
         public PromocaoProdServService(PetshopContext db) : base(db)
         {
+        }
+
+        async Task<PromocaoProdServ> IBaseRepository<PromocaoProdServ>.GetByIdAsync(Expression<Func<PromocaoProdServ, bool>> expression)
+        {
+            return await DbSet
+                .Include(x => x.Promocao)
+                .FirstOrDefaultAsync(expression);
+        }
+
+
+
+        async Task<PromocaoProdServ> IBaseRepository<PromocaoProdServ>.GetByIdAsync(int id)
+        {
+            return await DbSet
+                .Include(x => x.Promocao)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<PromocaoProdServ>> ConsultaRegistros(int promocaoId)

@@ -5,11 +5,11 @@ namespace Site.Abstraction
 {
     public class AbstractController : Controller
     {
-        public void Toastr(PayloadMensagem mensagem)
+        public void Toastr(PayloadMensagem payloadMensagem)
         {
-            TempData["toastr"] = mensagem.Tipo;
-            TempData["toastrMsg"] = mensagem.Mensagem;
-            TempData["toastrTitulo"] = mensagem.Titulo;
+            TempData["toastr"] = payloadMensagem.Tipo;
+            TempData["toastrMsg"] = payloadMensagem.Mensagem;
+            TempData["toastrTitulo"] = payloadMensagem.Titulo;
         }
     }
 }

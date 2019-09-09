@@ -8,6 +8,9 @@ namespace Data.Entities.Models
         public Agendamento()
         {
             Venda = new HashSet<Venda>();
+            VendaAvaliacao = new HashSet<VendaAvaliacao>();
+            VendaProduto = new HashSet<VendaProduto>();
+            VendaServico = new HashSet<VendaServico>();
         }
 
         public int Id { get; set; }
@@ -25,5 +28,8 @@ namespace Data.Entities.Models
         public virtual Servico Servico { get; set; }
         public virtual Usuario Usuario { get; set; }
         public virtual ICollection<Venda> Venda { get; set; }
+        public virtual ICollection<VendaAvaliacao> VendaAvaliacao { get; set; }
+        public virtual ICollection<VendaProduto> VendaProduto { get; set; }
+        public virtual ICollection<VendaServico> VendaServico { get; set; }
     }
 }

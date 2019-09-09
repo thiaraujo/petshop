@@ -368,11 +368,11 @@ namespace Data.Entities.Models
 
             modelBuilder.Entity<VendaAvaliacao>(entity =>
             {
-                entity.HasOne(d => d.Venda)
+                entity.HasOne(d => d.Agendamento)
                     .WithMany(p => p.VendaAvaliacao)
-                    .HasForeignKey(d => d.VendaId)
+                    .HasForeignKey(d => d.AgendamentoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__VendaAval__Venda__70DDC3D8");
+                    .HasConstraintName("FK__VendaAval__Agend__1DB06A4F");
             });
 
             modelBuilder.Entity<VendaProduto>(entity =>
@@ -381,16 +381,16 @@ namespace Data.Entities.Models
 
                 entity.Property(e => e.ValorComDesconto).HasColumnType("decimal(15, 2)");
 
+                entity.HasOne(d => d.Agendamento)
+                    .WithMany(p => p.VendaProduto)
+                    .HasForeignKey(d => d.AgendamentoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__VendaProd__Agend__160F4887");
+
                 entity.HasOne(d => d.Produto)
                     .WithMany(p => p.VendaProduto)
                     .HasForeignKey(d => d.ProdutoId)
-                    .HasConstraintName("FK__VendaProd__Produ__6A30C649");
-
-                entity.HasOne(d => d.Venda)
-                    .WithMany(p => p.VendaProduto)
-                    .HasForeignKey(d => d.VendaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__VendaProd__Venda__693CA210");
+                    .HasConstraintName("FK__VendaProd__Produ__17036CC0");
             });
 
             modelBuilder.Entity<VendaServico>(entity =>
@@ -399,16 +399,16 @@ namespace Data.Entities.Models
 
                 entity.Property(e => e.ValorComDesconto).HasColumnType("decimal(15, 2)");
 
+                entity.HasOne(d => d.Agendamento)
+                    .WithMany(p => p.VendaServico)
+                    .HasForeignKey(d => d.AgendamentoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__VendaServ__Agend__19DFD96B");
+
                 entity.HasOne(d => d.Servico)
                     .WithMany(p => p.VendaServico)
                     .HasForeignKey(d => d.ServicoId)
-                    .HasConstraintName("FK__VendaServ__Servi__6E01572D");
-
-                entity.HasOne(d => d.Venda)
-                    .WithMany(p => p.VendaServico)
-                    .HasForeignKey(d => d.VendaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__VendaServ__Venda__6D0D32F4");
+                    .HasConstraintName("FK__VendaServ__Servi__1AD3FDA4");
             });
         }
     }

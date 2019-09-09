@@ -9,8 +9,8 @@ namespace Domain.Interfaces
     {
         Task<Venda> GerarVendaAposAgendamento(Agendamento agendamento);
         Task RegistraOpcaoPagamento(int pagamentoId, int vendaId);
-        Task RegistraVendaProduto(IEnumerable<ProdutoViewModel> produtos, int vendaId);
-        Task RegistraVendaServico(IEnumerable<ServicoViewModel> servicos, int vendaId);
+        Task RegistraVendaProduto(IEnumerable<ProdutoViewModel> produtos, int agendamentoId);
+        Task RegistraVendaServico(IEnumerable<ServicoViewModel> servicos, int agendamentoId);
         Task<string> ConcretizaVenda(decimal valorPago, int? pontosUtilizados, int vendaId);
         Task<IEnumerable<Venda>> ConsultaRegistros();
     }
