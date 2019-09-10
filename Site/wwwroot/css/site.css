@@ -1,3 +1,7 @@
 ﻿.select {
     width: 100% !important;
 }
+
+.ausente {
+    display: none;
+}

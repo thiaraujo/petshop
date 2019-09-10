@@ -79,6 +79,7 @@ namespace Site.Controllers
             venda.ValorProdutos = valor;
             venda.ValorProdutosDesconto = desconto;
             venda.ValorServico = agendamento.Servico.Preco;
+            venda.DataPagamento = DateTime.Now;
 
             //Se a opção for pataz, é porque possui saldo, então não cobra o valor do serviço
             if (venda.TipoPagamentoId == 4)
@@ -178,13 +179,18 @@ namespace Site.Controllers
         {
             var agendamentos = await _agendamento.ConsultaRegistros(null, DateTime.Now.Date);
 
+            //Remove os que foram concluidos
+            var vendas = await _venda.GetAllAsync(x => x.DataPagamento == DateTime.Now.Date);
+            agendamentos = agendamentos.Where(x => !vendas.Any(v => v.AgendamentoId == x.Id));
+
             var reultadoJson = agendamentos.Select(x => new
             {
                 id = x.Id,
                 pet = x.Animal.Nome,
                 cliente = x.Cliente.Nome,
                 hora = x.HoraMarcado.ToString("g"),
-                horaFull = x.HoraMarcado
+                horaFull = x.HoraMarcado,
+                ausente = x.Ausente == 1
             }).OrderBy(x => x.horaFull).ToList();
 
             return Json(reultadoJson);
@@ -280,6 +286,23 @@ namespace Site.Controllers
             return Json(result);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetConcluidos()
+        {
+            var vendas = await _venda.ConsultaRegistros();
+            vendas = vendas.Where(x => x.DataPagamento == DateTime.Now.Date);
+
+            var reultadoJson = vendas.Select(x => new
+            {
+                id = x.Id,
+                pet = x.Agendamento.Animal.Nome,
+                cliente = x.Agendamento.Cliente.Nome,
+                valor = x.ValorPago.ToString("N")
+            }).OrderBy(x => x.id).ToList();
+
+            return Json(reultadoJson);
+        }
+
         #endregion
 
         #region Json Post
@@ -313,6 +336,15 @@ namespace Site.Controllers
 
             //se chegou aqui, então salva
             await _venda.RegistraVendaProduto(vendaProduto);
+            return true;
+        }
+
+        [HttpPost]
+        public async Task<bool> PostClienteAusente(int id)
+        {
+            var agendamento = await _agendamento.GetByIdAsync(id);
+            agendamento.Ausente = 1;
+            _agendamento.Update(agendamento);
             return true;
         }
 

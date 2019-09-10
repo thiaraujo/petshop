@@ -39,11 +39,25 @@
             <div class="card-body">
                 <label>Serviços Concluídos </label>
                 <small>@DateTime.Now.ToShortDateString()</small>
+                <table class="table table-striped table-hover" id="tblConcluidos">
+                    <thead>
+                        <tr>
+                            <th>Pet</th>
+                            <th>Cliente</th>
+                            <th class="text-center">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="alert alert-info" id="divSemConclusao" style="display: none">
+                    <label>Nenhum serviço concluído!</label>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal para informações de agendamento -->
 <div class="modal fade" id="mdlAgendamento" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document" style="max-width: 750px; width: 750px;">
         <div class="modal-content">
@@ -118,7 +132,7 @@
     </div>
 </div>
 
-
+<!-- Modal para informar sobre o pagamento -->
 <div class="modal fade" id="mdlPagamento" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document" style="max-width: 1024px; width: 1024px;">
         <div class="modal-content">
@@ -128,7 +142,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="form-pagamento" method="post" action="javascript:void(0)">
+            <form id="form-pagamento" method="post" action="@Url.Action("ConfirmarVenda")">
                 <div class="modal-body">
                     <input type="hidden" name="AgendamentoId" id="hddEdicaoIdPag" />
                     <div class="row">
@@ -237,7 +251,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">Cliente Ausente?</button>
+                    <button type="button" class="btn btn-warning pull-left" onclick="clienteAusente()" >Cliente Ausente?</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success">Confirmar</button>
                 </div>

@@ -74,7 +74,7 @@ namespace Domain.Services
             await DbSet.AddAsync(venda);
             await Db.SaveChangesAsync();
             //Baixa no estoque
-            await BaixaNoEstoque(venda.Id);
+            await BaixaNoEstoque(venda.AgendamentoId);
 
             return "Venda realizada com sucesso!";
         }
@@ -164,6 +164,8 @@ namespace Domain.Services
         {
             var vendas = await DbSet
                 .Include(x => x.Agendamento)
+                .Include(x => x.Agendamento.Cliente)
+                .Include(x => x.Agendamento.Animal)
                 .Include(x => x.TipoPagamento)
                 .Include(x => x.Agendamento.VendaProduto)
                 .ToListAsync();

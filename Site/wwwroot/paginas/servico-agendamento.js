@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     getAgendamentos();
+    getConcluidos();
 });
 
 function abrirModal() {
@@ -210,8 +211,9 @@ function getAgendamentos() {
                             "<td>" + item.cliente + "</td>" +
                             "<td class='text-center'>" + item.hora + "</td>" +
                             "<td class='text-center'>" +
-                            "<button class='btn btn-xs btn-info' onclick='getRegistroEdicao(" + item.id + ")' title='Visualizar detalhes'><i class='fa fa-edit'></i></button>" +
-                            "<button class='btn btn-xs btn-success' onclick='abrirPagamento(" + item.id + ")' title='Realizar o pagamento'><i class='fa fa-credit-card'></i></button>" +
+                            "<button class='btn btn-xs btn-info " + (item.ausente ? 'ausente' : '') + "' onclick='getRegistroEdicao(" + item.id + ")' title='Visualizar detalhes'><i class='fa fa-edit'></i></button>" +
+                            "<button class='btn btn-xs btn-success " + (item.ausente ? 'ausente' : '') + "' onclick='abrirPagamento(" + item.id + ")' title='Realizar o pagamento'><i class='fa fa-credit-card'></i></button>" +
+                            "<span class='badge badge-danger " + (!item.ausente ? 'ausente' : '') + "'>ausente</span>"+
                             "</td>" +
                             "</tr>";
                     });
@@ -339,6 +341,49 @@ function getValorServico(id) {
             $("#txtValorTotal").val(response.total);
             $("#txtValorDescontos").val(response.desconto);
         });
+}
+
+function getConcluidos() {
+
+    $("#tblConcluidos > tbody > tr").remove();
+    var tr;
+
+    $.get("/caixa/GetConcluidos")
+        .done(function (response) {
+            if (response.length < 1) {
+                $("#divSemConclusao").show();
+            } else {
+                $.each(response,
+                    function (i, item) {
+                        tr += "<tr>" +
+                            "<td>" + item.pet + "</td>" +
+                            "<td>" + item.cliente + "</td>" +
+                            "<td class='text-center'>" + item.valor + "</td>" +
+                            "</tr>";
+                    });
+
+                $("#tblConcluidos").append(tr);
+                $("#divSemConclusao").hide();
+            }
+        });
+
+}
+
+function clienteAusente() {
+
+    var id = $("#hddEdicaoIdPag").val();
+
+    $.post("/caixa/PostClienteAusente", { id: id })
+        .done(function (response) {
+            if (response === true) {
+                showToastr("ok", "Cliente esteve ausente neste serviço.", "Operação Confirmada");
+                $("#mdlPagamento").modal("hide");
+                getAgendamentos();
+            } else {
+                showToastr("aviso", "Não foi possível informar ausência do cliente.", "Operação Cancelada");
+            }
+        });
+
 }
 
 $("#form-agendamento").submit(function (event) {
