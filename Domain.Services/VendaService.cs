@@ -164,6 +164,7 @@ namespace Domain.Services
         {
             var vendas = await DbSet
                 .Include(x => x.Agendamento)
+                .Include(x => x.Agendamento.Servico)
                 .Include(x => x.Agendamento.Cliente)
                 .Include(x => x.Agendamento.Animal)
                 .Include(x => x.TipoPagamento)

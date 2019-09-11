@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Data.Entities.Models.Venda>
+
+@{
+    ViewData["Title"] = "Relatório de Serviços";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="card-title">
+                    Serviços Realizados por Profissional
+                </h4>
+            </div>
+            <div class="col-md-6">
+                <form action="@Url.Action("Servicos")" method="get">
+                    <div class="row">
+                        <div class="col-md-4">
+                            @Html.DropDownList("mes", (SelectList)ViewBag.Meses, " -- Período -- ", new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                @Html.DropDownList("profissional", (SelectList)ViewBag.Profissionais, " -- Profissional -- ", new { @class = "form-control" })
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-info"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br />
+        <div class="table-responsive">
+            @if (Model.Count() > 0)
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Data</th>
+                            <th class="text-center">Valor</th>
+                            <th>Serviço</th>
+                            <th>Cliente</th>
+                            <th class="text-center">Pet</th>
+                            <th class="text-center">Ausente?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@item.DataPagamento.ToShortDateString()</td>
+                                <td class="text-center">@item.ValorPago.ToString("N")</td>
+                                <td>@item.Agendamento.Servico.Nome</td>
+                                <td>@item.Agendamento.Cliente.Nome</td>
+                                <td class="text-center">@item.Agendamento.Animal.Nome</td>
+                                <td class="text-center">@(item.Agendamento.Ausente == 1 ? "Sim" : "Não")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-primary text-center">
+                    <h5>Nenhum registro para ser exibido!</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div>
