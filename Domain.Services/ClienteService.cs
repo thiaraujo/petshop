@@ -16,6 +16,7 @@ namespace Domain.Services
 
         }
 
+        // Função padrão para atualizar ou cadastrar um registro
         public async Task<Cliente> CadastraOuAtualiza(Cliente cliente)
         {
             if (string.IsNullOrEmpty(cliente.Nome) || string.IsNullOrEmpty(cliente.Cpf) ||
@@ -35,6 +36,7 @@ namespace Domain.Services
             return cliente;
         }
 
+        // Função padrão para consulta de registros
         public async Task<IEnumerable<Cliente>> ConsultaRegistros(string cliente)
         {
             var clientes = await DbSet.ToListAsync();
@@ -45,6 +47,7 @@ namespace Domain.Services
             return clientes;
         }
 
+        // Função para desabilitar um cliente
         public async Task DesabilitarRegistro(int clienteId)
         {
             var registro = await DbSet.FindAsync(clienteId);

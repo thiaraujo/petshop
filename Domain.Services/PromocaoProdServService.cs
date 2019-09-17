@@ -22,8 +22,6 @@ namespace Domain.Services
                 .FirstOrDefaultAsync(expression);
         }
 
-
-
         async Task<PromocaoProdServ> IBaseRepository<PromocaoProdServ>.GetByIdAsync(int id)
         {
             return await DbSet
@@ -31,12 +29,14 @@ namespace Domain.Services
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        // Consulta registros
         public async Task<IEnumerable<PromocaoProdServ>> ConsultaRegistros(int promocaoId)
         {
             var produtosNaPromocao = await DbSet.Where(x => x.PromocaoId == promocaoId).ToListAsync();
             return produtosNaPromocao;
         }
 
+        // Atualiza a promoção de um produto ou serviço
         public async Task CadastraOuAtualizaProdServNaPromocao(int promocaoId, int[] produtos, int[] servicos)
         {
             if (!produtos.Any() && !servicos.Any())

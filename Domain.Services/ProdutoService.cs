@@ -15,7 +15,7 @@ namespace Domain.Services
         {
         }
 
-        // Cadastra ou atualiza um registro
+        // Função padrão para atualizar ou cadastrar um registro
         public async Task<Produto> CadastraOuAtualiza(Produto produto)
         {
             if (string.IsNullOrEmpty(produto.Nome) || string.IsNullOrEmpty(produto.Fabricante))
@@ -33,6 +33,7 @@ namespace Domain.Services
             return produto;
         }
 
+        // Função padrão para consulta de registros
         public async Task<IEnumerable<Produto>> ConsultaRegistros(string produto)
         {
             var produtos = await DbSet.ToListAsync();
@@ -61,6 +62,7 @@ namespace Domain.Services
             await Db.SaveChangesAsync();
         }
 
+        // Função para desabilitar um registro
         public async Task DesabilitarRegistro(int produtoId)
         {
             var registro = await DbSet.FindAsync(produtoId);
@@ -74,6 +76,7 @@ namespace Domain.Services
             }
         }
 
+        // Cadastra um produto
         public async Task<ProdutoViewModel> RegistroDoProduto(int produtoId)
         {
             var produto = await DbSet.FindAsync(produtoId);
@@ -102,6 +105,7 @@ namespace Domain.Services
             return produtoFinal;
         }
 
+        // Funação para atualizar o estoque
         public async Task<bool> AtualizaEstoque(int id, int estoque)
         {
             var registro = await DbSet.FindAsync(id);

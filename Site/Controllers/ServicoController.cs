@@ -3,13 +3,16 @@ using System.Threading.Tasks;
 using Data.Entities.Models;
 using Data.Entities.ViewModels;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Middleware.Converters.Interface;
 using Site.Abstraction;
+using Site.Identity;
 using X.PagedList;
 
 namespace Site.Controllers
 {
+    [Authorize]
     public class ServicoController : AbstractController
     {
         #region Construtor
@@ -71,7 +74,7 @@ namespace Site.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Cadastro(Servico servico, int[] produtos)
         {
-            var cadastroEdicaoConfirmado = await _servico.CadastraOuAtualiza(servico, 1);
+            var cadastroEdicaoConfirmado = await _servico.CadastraOuAtualiza(servico, User.Identity.GetId());
 
             if (cadastroEdicaoConfirmado == null)
             {

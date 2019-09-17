@@ -236,7 +236,7 @@ function abrirPagamento(id) {
             $("#txtPet").val(response.pet);
             $("#txtServico").val(response.servico);
             $("#txtValorServico").val(response.valor);
-            $("#txtPz").val(response.pz);
+            $("#txtPz").val(response.pataz);
             $("#spPzFinal").text(response.pzFinal);
             $("#txtPzNecessario").val(response.pzNecessario);
 

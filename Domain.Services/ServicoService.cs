@@ -14,7 +14,7 @@ namespace Domain.Services
         {
         }
 
-        // Cadastra ou atualiza o registro do serviço -> inclui histórico
+        // Função padrão para atualizar ou cadastrar um registro ->incluindo histórico
         public async Task<Servico> CadastraOuAtualiza(Servico servico, int usuarioAlterando)
         {
             if (!servico.TempoEstimado.HasValue || servico.Preco < 1)

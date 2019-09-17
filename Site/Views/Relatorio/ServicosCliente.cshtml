@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Data.Entities.Models.Venda>
 
 @{
-    ViewData["Title"] = "Relatório de Serviços";
+    ViewData["Title"] = "Relatório de Serviços por Cliente";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,18 +10,18 @@
         <div class="row">
             <div class="col-md-6">
                 <h4 class="card-title">
-                    Serviços Realizados por Profissional
+                    Serviços Realizados por Cliente
                 </h4>
             </div>
             <div class="col-md-6">
-                <form action="@Url.Action("Servicos")" method="get">
+                <form action="@Url.Action("ServicosCliente")" method="get">
                     <div class="row">
                         <div class="col-md-4">
                             @Html.DropDownList("mes", (SelectList)ViewBag.Meses, " -- Período -- ", new { @class = "form-control" })
                         </div>
                         <div class="col-md-8">
                             <div class="input-group">
-                                @Html.DropDownList("profissional", (SelectList)ViewBag.Profissionais, " -- Profissional -- ", new { @class = "form-control" })
+                                @Html.DropDownList("clienteId", (SelectList)ViewBag.Clientes, " -- Cliente -- ", new { @class = "form-control", data_live_search = "true" })
                                 <span class="input-group-btn">
                                     <button type="submit" class="btn btn-info"><i class="fa fa-search"></i></button>
                                 </span>
@@ -43,6 +43,7 @@
                             <th>Serviço</th>
                             <th>Cliente</th>
                             <th class="text-center">Pet</th>
+                            <th class="text-center">Pontos</th>
                             <th class="text-center">Ausente?</th>
                         </tr>
                     </thead>
@@ -55,6 +56,7 @@
                                 <td>@item.Agendamento.Servico.Nome</td>
                                 <td>@item.Agendamento.Cliente.Nome</td>
                                 <td class="text-center">@item.Agendamento.Animal.Nome</td>
+                                <td class="text-center">@item.Agendamento.Servico.PatazRecebido</td>
                                 <td class="text-center">@(item.Agendamento.Ausente == 1 ? "Sim" : "Não")</td>
                             </tr>
                         }
@@ -66,6 +68,7 @@
                             <td>-</td>
                             <td>-</td>
                             <td class="text-center">-</td>
+                            <td class="text-center">@(Model.Sum(x => x.Agendamento.Servico.PatazRecebido))</td>
                             <td class="text-center">-</td>
                         </tr>
                     </tfoot>

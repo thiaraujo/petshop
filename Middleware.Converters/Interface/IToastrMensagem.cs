@@ -6,27 +6,27 @@ namespace Middleware.Converters.Interface
     {
         #region Tipo: Info
 
-        PayloadMensagem SemRegistro();
-        PayloadMensagem SemRegistroRelatorio();
-        PayloadMensagem ConsultaIncorreta();
-        PayloadMensagem SemRegistroConsulta();
-        PayloadMensagem Aviso(string msg);
+        Payload SemRegistro();
+        Payload SemRegistroRelatorio();
+        Payload ConsultaIncorreta();
+        Payload SemRegistroConsulta();
+        Payload Aviso(string msg);
 
         #endregion
 
         #region Tipo: Aviso
 
-        PayloadMensagem CamposEmBranco();
-        PayloadMensagem DadosInformadosInvalidos(string msg);
+        Payload CamposEmBranco();
+        Payload DadosInformadosInvalidos(string msg);
 
         #endregion
 
         #region Tipo: Sucesso
 
-        PayloadMensagem RegistroAtualizado();
-        PayloadMensagem RegistroConfirmado();
-        PayloadMensagem UploadConfirmado();
-        PayloadMensagem Confirmado(string msg);
+        Payload RegistroAtualizado();
+        Payload RegistroConfirmado();
+        Payload UploadConfirmado();
+        Payload Confirmado(string msg);
 
         #endregion
     }

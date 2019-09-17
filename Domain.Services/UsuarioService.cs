@@ -48,6 +48,7 @@ namespace Domain.Services
             return usuario;
         }
 
+        // Função padrão para consulta de registros
         public async Task<IEnumerable<Usuario>> ConsultaRegistros(string usuario)
         {
             var usuarios = await DbSet.ToListAsync();

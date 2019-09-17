@@ -14,6 +14,7 @@ namespace Domain.Services
         {
         }
 
+        // Função padrão para atualizar ou cadastrar um registro
         public async Task CadastraOuAtualizaEspecialidade(int usuarioId, int[] tipos)
         {
             if (!tipos.Any())

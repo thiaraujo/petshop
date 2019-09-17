@@ -9,6 +9,7 @@ namespace Data.Entities.Models
         {
             Agendamento = new HashSet<Agendamento>();
             Animal = new HashSet<Animal>();
+            ClientePontuacao = new HashSet<ClientePontuacao>();
         }
 
         public int Id { get; set; }
@@ -22,5 +23,6 @@ namespace Data.Entities.Models
 
         public virtual ICollection<Agendamento> Agendamento { get; set; }
         public virtual ICollection<Animal> Animal { get; set; }
+        public virtual ICollection<ClientePontuacao> ClientePontuacao { get; set; }
     }
 }

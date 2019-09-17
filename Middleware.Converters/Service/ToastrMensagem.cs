@@ -5,9 +5,9 @@ namespace Middleware.Converters.Service
 {
     public class ToastrMensagem : IToastrMensagem
     {
-        public PayloadMensagem SemRegistro()
+        public Payload SemRegistro()
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = "Ainda não há registros para os termos consultados",
                 Titulo = "Consulta sem Resultado",
@@ -17,9 +17,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem SemRegistroRelatorio()
+        public Payload SemRegistroRelatorio()
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = "A consulta realizada não retornou nenhum resultado",
                 Titulo = "Consulta sem Resultado",
@@ -29,9 +29,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem ConsultaIncorreta()
+        public Payload ConsultaIncorreta()
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = "Este registro não foi carregado corretamente, em alguns instantes, tente novamente",
                 Titulo = "Resultado Inesperado",
@@ -41,9 +41,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem SemRegistroConsulta()
+        public Payload SemRegistroConsulta()
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = "Não houve registros encontrados para os termos utilizados",
                 Titulo = "Tente alterar os termos",
@@ -53,9 +53,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem Aviso(string msg)
+        public Payload Aviso(string msg)
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = msg,
                 Tipo = "info"
@@ -64,9 +64,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem CamposEmBranco()
+        public Payload CamposEmBranco()
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = "Você deixou alguns campos em branco, preencha-os e tente novamente",
                 Titulo = "Informaçoes em Branco",
@@ -76,9 +76,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem DadosInformadosInvalidos(string msg)
+        public Payload DadosInformadosInvalidos(string msg)
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = msg,
                 Titulo = "Informações Inválidas",
@@ -88,9 +88,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem RegistroAtualizado()
+        public Payload RegistroAtualizado()
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = "Registro atualizado com sucesso",
                 Titulo = "Informações Atualizadas",
@@ -100,9 +100,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem RegistroConfirmado()
+        public Payload RegistroConfirmado()
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = "Registro cadastrado com sucesso",
                 Titulo = "Informações Registradas",
@@ -112,9 +112,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem UploadConfirmado()
+        public Payload UploadConfirmado()
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = "Arquivo salvo com sucesso",
                 Titulo = "Informações Registradas",
@@ -124,9 +124,9 @@ namespace Middleware.Converters.Service
             return mensagem;
         }
 
-        public PayloadMensagem Confirmado(string msg)
+        public Payload Confirmado(string msg)
         {
-            var mensagem = new PayloadMensagem
+            var mensagem = new Payload
             {
                 Mensagem = msg,
                 Tipo = "ok"

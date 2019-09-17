@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Data.Entities.Models;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Middleware.Converters.Interface;
 using Site.Abstraction;
@@ -9,6 +10,7 @@ using X.PagedList;
 
 namespace Site.Controllers
 {
+    [Authorize]
     public class ClienteController : AbstractController
     {
         #region Construtor

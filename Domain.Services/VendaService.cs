@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Models;
-using Data.Entities.ViewModels;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,56 +14,10 @@ namespace Domain.Services
         {
         }
 
-        // Após ser efetuado o agendamento, o operador tem a possibilidade de gerar uma venda
-        public async Task<Venda> GerarVendaAposAgendamento(Agendamento agendamento)
-        {
-            var venda = new Venda
-            {
-                AgendamentoId = agendamento.Id
-            };
-
-            await DbSet.AddAsync(venda);
-            await Db.SaveChangesAsync();
-
-            return venda;
-        }
-
-        public async Task RegistraOpcaoPagamento(int pagamentoId, int vendaId)
-        {
-            var registro = await DbSet.FindAsync(vendaId);
-
-            if (registro == null) return;
-
-            registro.TipoPagamentoId = pagamentoId;
-
-            Db.Update(registro);
-            await Db.SaveChangesAsync();
-        }
-
+        // Registra o produto selecionado para venda no agendamento
         public async Task RegistraVendaProduto(VendaProduto produto)
         {
             await Db.VendaProduto.AddAsync(produto);
-            await Db.SaveChangesAsync();
-        }
-
-        public async Task RegistraVendaServico(IEnumerable<ServicoViewModel> servicos, int agendamentoId)
-        {
-            var registro = await Db.Agendamento.FindAsync(agendamentoId);
-
-            if (registro == null) return;
-
-            var vendaServicos = new List<VendaServico>();
-            foreach (var item in servicos)
-            {
-                vendaServicos.Add(new VendaServico
-                {
-                    ServicoId = item.ServicoId,
-                    ValorComDesconto = item.PrecoComDesconto,
-                    Valor = item.Preco ?? 0
-                });
-            }
-
-            await Db.VendaServico.AddRangeAsync(vendaServicos);
             await Db.SaveChangesAsync();
         }
 
@@ -75,72 +28,56 @@ namespace Domain.Services
             await Db.SaveChangesAsync();
             //Baixa no estoque
             await BaixaNoEstoque(venda.AgendamentoId);
+            //Atualiza a pontuação
+            await AtualizaPontosPetz(venda);
 
             return "Venda realizada com sucesso!";
         }
 
-        private async Task<decimal> ValorEmProdutos(int agendamentoid)
+        // Atualiza o saldo de pontos petz do cliente
+        public async Task AtualizaPontosPetz(Venda venda)
         {
-            var vendidos = await Db.VendaProduto.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
-            if (vendidos.Any())
-            {
-                var valores = vendidos.Where(x => !x.ValorComDesconto.HasValue).Sum(x => x.Valor);
+            var vendaCompleta = await DbSet
+                .Include(x => x.Agendamento.Servico)
+                .Include(x => x.Agendamento.Cliente)
+                .FirstOrDefaultAsync(x => x.Id == venda.Id);
+            var cliente = await Db.Cliente.FindAsync(vendaCompleta.Agendamento.ClienteId);
 
-                return valores;
+            // Pega a pontuação atual
+            var pontuacao = await Db.ClientePontuacao.FindAsync(cliente.Id);
+
+            // Se ainda não possuir registro de pontuação, então cria
+            if (pontuacao == null)
+            {
+                var ponto = new ClientePontuacao
+                {
+                    ClienteId = cliente.Id,
+                    DataAtualizado = DateTime.Now,
+                    Pontos = vendaCompleta.Agendamento.Servico.PatazRecebido
+                };
+
+                await Db.ClientePontuacao.AddAsync(ponto);
+            }
+            else
+            {
+                // Adiciona os pontos recebidos
+                pontuacao.Pontos = pontuacao.Pontos + vendaCompleta.Agendamento.Servico.PatazRecebido;
+                pontuacao.DataAtualizado = DateTime.Now;
+
+                //se for tipo de venda 4, onde é o pagamento por pontos, então debita -> se chegou aqui, é porque tinha o necessário
+                if (venda.TipoPagamentoId == 4)
+                {
+                    var necessario = venda.Agendamento.Servico.PatazNecessario ?? 0;
+                    pontuacao.Pontos = pontuacao.Pontos - necessario;
+                }
+
+                Db.ClientePontuacao.Update(pontuacao);
             }
 
-            return 0;
+            await Db.SaveChangesAsync();
         }
 
-        private async Task<decimal> ValorEmProdutosComDesconto(int agendamentoid)
-        {
-            var vendidos = await Db.VendaProduto.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
-            if (vendidos.Any())
-            {
-                var valoresComDesconto = vendidos.Where(x => x.ValorComDesconto.HasValue).Sum(x => x.ValorComDesconto);
-
-                return valoresComDesconto ?? 0;
-            }
-
-            return 0;
-        }
-
-        private async Task<decimal> ValorEmServicos(int agendamentoid)
-        {
-            var vendidos = await Db.VendaServico.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
-            if (vendidos.Any())
-            {
-                var valores = vendidos.Where(x => !x.ValorComDesconto.HasValue).Sum(x => x.Valor);
-
-                return valores;
-            }
-
-            return 0;
-        }
-
-        private async Task<decimal> ValorEmServicosComDesconto(int agendamentoid)
-        {
-            var vendidos = await Db.VendaServico.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
-            if (vendidos.Any())
-            {
-                var valoresComDesconto = vendidos.Where(x => x.ValorComDesconto.HasValue).Sum(x => x.ValorComDesconto);
-
-                return valoresComDesconto ?? 0;
-            }
-
-            return 0;
-        }
-
-        private async Task<int> CalculaPatazRecebidoOuNecessario(int agendamentoid)
-        {
-            var servicos = await Db.VendaServico
-                .Include(x => x.Servico)
-                .Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
-
-            var pataz = servicos.Sum(x => x.Servico.PatazRecebido);
-            return pataz ?? 0;
-        }
-
+        // Ao finalizar a venda, se tiver produto, faz a baixa no estoque
         private async Task BaixaNoEstoque(int agendamentoid)
         {
             var vendidos = await Db.VendaProduto.Where(x => x.AgendamentoId == agendamentoid).ToListAsync();
@@ -160,6 +97,7 @@ namespace Domain.Services
             }
         }
 
+        // Consulta os registros, incluindos suas dependencias
         public async Task<IEnumerable<Venda>> ConsultaRegistros()
         {
             var vendas = await DbSet

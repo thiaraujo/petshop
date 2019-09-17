@@ -12,6 +12,7 @@ namespace Domain.Services
         {
         }
 
+        // Função padrão para atualizar ou cadastrar um registro
         public async Task<Promocao> CadastraOuAtualiza(Promocao promocao)
         {
             if (promocao.DataInicio.HasValue && promocao.DataFim.HasValue)

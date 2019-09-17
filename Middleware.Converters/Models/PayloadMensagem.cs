@@ -1,6 +1,6 @@
 ﻿namespace Middleware.Converters.Models
 {
-    public class PayloadMensagem
+    public class Payload
     {
         public string Mensagem { get; set; }
         public string Titulo { get; set; }

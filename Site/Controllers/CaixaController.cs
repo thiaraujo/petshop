@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Models;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Middleware.Converters.Interface;
 using Site.Abstraction;
@@ -11,6 +12,7 @@ using Site.Models;
 
 namespace Site.Controllers
 {
+    [Authorize]
     public class CaixaController : AbstractController
     {
         #region Construtor
@@ -26,6 +28,7 @@ namespace Site.Controllers
         private readonly IProduto _produtos;
         private readonly IVenda _venda;
         private readonly IAgendamento _agendamento;
+        private readonly IClientePontuacao _clientePontuacao;
         private readonly IToastrMensagem _toastr;
 
         public CaixaController(ICliente cliente,
@@ -38,7 +41,7 @@ namespace Site.Controllers
             IProduto produtos,
             IPromocaoProdServ promocao,
             IVendaProduto vendaProduto,
-            IVenda venda, IToastrMensagem toastr)
+            IVenda venda, IToastrMensagem toastr, IClientePontuacao clientePontuacao)
         {
             _cliente = cliente;
             _animal = animal;
@@ -52,9 +55,12 @@ namespace Site.Controllers
             _vendaProduto = vendaProduto;
             _venda = venda;
             _toastr = toastr;
+            _clientePontuacao = clientePontuacao;
         }
 
         #endregion
+
+        #region Caixa
 
         public IActionResult Registro()
         {
@@ -90,6 +96,8 @@ namespace Site.Controllers
 
             return RedirectToAction("Registro");
         }
+
+        #endregion
 
         #region Json Aux
 
@@ -206,11 +214,8 @@ namespace Site.Controllers
             var pz = 0;
             if (agendamentos.Any())
             {
-                var pataz = await _venda.GetAllAsync(x => agendamentos.Any(a => a.Id == x.AgendamentoId));
-                if (pataz.Any())
-                {
-                    pz = pataz.Sum(x => x.PatazTotalRecebido ?? 0);
-                }
+                var pataz = await _clientePontuacao.GetByIdAsync(x => x.ClienteId == servico.ClienteId);
+                pz = pataz == null ? 0 : pataz.Pontos ?? 0;
             }
 
             var result = new

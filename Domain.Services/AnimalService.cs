@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Models;
-using Data.Entities.ViewModels;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +13,7 @@ namespace Domain.Services
         {
         }
 
+        // Função padrão para atualizar ou cadastrar um registro
         public async Task<Animal> CadastraOuAtualiza(Animal animal)
         {
             if (!animal.TipoAnimalId.HasValue || string.IsNullOrEmpty(animal.Nome) || !animal.RacaAnimalId.HasValue)
@@ -28,6 +28,7 @@ namespace Domain.Services
             return animal;
         }
 
+        // Função padrão para consulta de registros
         public async Task<IEnumerable<Animal>> ConsultaRegistros(string animal)
         {
             var animais = await DbSet

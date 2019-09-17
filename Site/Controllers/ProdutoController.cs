@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Data.Entities.Models;
 using Data.Entities.ViewModels;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Middleware.Converters.Interface;
@@ -12,6 +13,7 @@ using X.PagedList;
 
 namespace Site.Controllers
 {
+    [Authorize]
     public class ProdutoController : AbstractController
     {
         #region Construtor

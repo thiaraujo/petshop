@@ -1,11 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Site.Identity
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Site</title>
 
-    <!-- plugins:css -->
+    <!-- css -->
     <link rel="stylesheet" href="~/vendors/fontawesome-free-5.10.1/css/all.min.css" />
     <link rel="stylesheet" href="~/vendors/css/vendor.bundle.base.css">
     <link rel="stylesheet" href="~/vendors/css/vendor.bundle.addons.css">
@@ -21,24 +22,19 @@
             <nav class="navbar top-navbar col-lg-12 col-12 p-0">
                 <div class="container">
                     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                        <a class="navbar-brand brand-logo" href="index.html"><img src="http://www.urbanui.com/fily/template/images/logo.svg" alt="logo" /></a>
-                        <a class="navbar-brand brand-logo-mini" href="index.html"><img src="http://www.urbanui.com/fily/template/images/logo-mini.svg" alt="logo" /></a>
+                        <a class="navbar-brand brand-logo" href="@Url.Action("Registro","Caixa")"><img src="http://www.urbanui.com/fily/template/images/logo.svg" alt="logo" /></a>
+                        <a class="navbar-brand brand-logo-mini" href="@Url.Action("Registro","Caixa")"><img src="http://www.urbanui.com/fily/template/images/logo-mini.svg" alt="logo" /></a>
                     </div>
                     <div class="navbar-menu-wrapper d-flex align-items-center">
                         <ul class="navbar-nav navbar-nav-right">
                             <li class="nav-item nav-profile dropdown mr-0 mr-sm-2">
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
                                     <img src="~/images/faces/face28.jpg" alt="profile" />
-                                    <span class="nav-profile-name">Don Richards</span>
+                                    <span class="nav-profile-name">@User.Identity.GetNome()</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                                    <a class="dropdown-item">
-                                        <i class="fa fa-cog text-primary"></i>
-                                        Settings
-                                    </a>
-                                    <a class="dropdown-item">
-                                        <i class="fa fa-sign-out text-primary"></i>
-                                        Sair
+                                    <a class="dropdown-item" href="@Url.Action("Sair","Acesso")">
+                                        <i class="fa fa-power-off text-primary"></i> Sair
                                     </a>
                                 </div>
                             </li>
@@ -111,6 +107,7 @@
                                 <ul class="submenu-item">
                                     <li class="nav-item">
                                         <a class="nav-link" href="@Url.Action("Servicos", "Relatorio")">Serviços</a>
+                                        <a class="nav-link" href="@Url.Action("ServicosCliente", "Relatorio")">Serviço por Cliente</a>
                                     </li>
                                 </ul>
                             </div>
@@ -136,17 +133,12 @@
         </div>
     </div>
 
-    <!-- plugins:js -->
+    <!-- js -->
     <script src="~/vendors/fontawesome-free-5.10.1/js/all.min.js"></script>
     <script src="~/vendors/js/vendor.bundle.base.js"></script>
     <script src="~/vendors/js/vendor.bundle.addons.js"></script>
-    <!-- endinject -->
-    <!-- inject:js -->
-    <script src="~/js/off-canvas.js"></script>
-    <script src="~/js/hoverable-collapse.js"></script>
-    <script src="~/js/template.js"></script>
     <script src="~/js/jquery.mask.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
     <script src="~/lib/select2/js/select2.js"></script>
     <script src="~/js/site.js"></script>
 

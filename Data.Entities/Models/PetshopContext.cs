@@ -20,6 +20,7 @@ namespace Data.Entities.Models
         public virtual DbSet<Agendamento> Agendamento { get; set; }
         public virtual DbSet<Animal> Animal { get; set; }
         public virtual DbSet<Cliente> Cliente { get; set; }
+        public virtual DbSet<ClientePontuacao> ClientePontuacao { get; set; }
         public virtual DbSet<PorteAnimal> PorteAnimal { get; set; }
         public virtual DbSet<Produto> Produto { get; set; }
         public virtual DbSet<Promocao> Promocao { get; set; }
@@ -50,7 +51,6 @@ namespace Data.Entities.Models
 
                 // define the database to use
                 optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
-
             }
         }
 
@@ -148,6 +148,17 @@ namespace Data.Entities.Models
                 entity.Property(e => e.Rg)
                     .HasMaxLength(25)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ClientePontuacao>(entity =>
+            {
+                entity.Property(e => e.DataAtualizado).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Cliente)
+                    .WithMany(p => p.ClientePontuacao)
+                    .HasForeignKey(d => d.ClienteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__ClientePo__Clien__29221CFB");
             });
 
             modelBuilder.Entity<PorteAnimal>(entity =>

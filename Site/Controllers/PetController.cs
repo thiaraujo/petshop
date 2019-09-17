@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Data.Entities.Models;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Middleware.Converters.Interface;
@@ -10,6 +11,7 @@ using X.PagedList;
 
 namespace Site.Controllers
 {
+    [Authorize]
     public class PetController : AbstractController
     {
         #region Construtor

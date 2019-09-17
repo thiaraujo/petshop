@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Data.Entities.Models;
 using Data.Entities.ViewModels;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Middleware.Converters.Interface;
 using Middleware.Converters.Service;
@@ -11,6 +12,7 @@ using X.PagedList;
 
 namespace Site.Controllers
 {
+    [Authorize]
     public class ProfissionalController : AbstractController
     {
         #region Construtor
@@ -21,7 +23,10 @@ namespace Site.Controllers
         private readonly IUsuarioEspecialidade _usuarioEspecialidade;
         private readonly IToastrMensagem _toastrMensagem;
 
-        public ProfissionalController(IUsuario usuario, ITipoAnimal tipoAnimal, IUsuarioEspecialidade usuarioEspecialidade, IToastrMensagem toastrMensagem)
+        public ProfissionalController(IUsuario usuario, 
+            ITipoAnimal tipoAnimal,
+            IUsuarioEspecialidade usuarioEspecialidade, 
+            IToastrMensagem toastrMensagem)
         {
             _usuario = usuario;
             _tipoAnimal = tipoAnimal;

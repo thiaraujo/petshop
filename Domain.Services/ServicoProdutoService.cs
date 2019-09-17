@@ -13,6 +13,7 @@ namespace Domain.Services
         {
         }
 
+        // Função padrão para atualizar ou cadastrar um registro
         public async Task CadastraOuAtualizaProdutosNoServico(int servicoId, int[] produtos)
         {
             if (!produtos.Any())
