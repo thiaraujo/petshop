@@ -1,0 +1,100 @@
+﻿@using App.Identity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - App</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="~/vendors/fontawesome-free-5.10.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="~/vendors/css/vendor.bundle.addons.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/toastr.min.css" />
+    <link rel="stylesheet" href="~/lib/select2/css/select2.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="container-scroller">
+        <div class="horizontal-menu">
+            <nav class="navbar top-navbar col-lg-12 col-12 p-0">
+                <div class="container">
+                    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                        <a class="navbar-brand brand-logo" href="@Url.Action("Agendamentos","Agendamento")"><img src="http://www.urbanui.com/fily/template/images/logo.svg" alt="logo" /></a>
+                        <a class="navbar-brand brand-logo-mini" href="@Url.Action("Agendamentos","Agendamento")"><img src="http://www.urbanui.com/fily/template/images/logo-mini.svg" alt="logo" /></a>
+                    </div>
+                    <div class="navbar-menu-wrapper d-flex align-items-center">
+                        <ul class="navbar-nav navbar-nav-right">
+                            <li class="nav-item nav-profile dropdown mr-0 mr-sm-2">
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                                    <img src="~/images/faces/face28.jpg" alt="profile" />
+                                    <span class="nav-profile-name">@User.Identity.GetNome()</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                                    <a class="dropdown-item" href="@Url.Action("Sair","Acesso")">
+                                        <i class="fa fa-power-off text-primary"></i> Sair
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle">
+                            <span class="fa fa-bars"></span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+            <nav class="bottom-navbar">
+                <div class="container">
+                    <ul class="nav page-navigation">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Agendamentos","Agendamento")">
+                                <i class="fa fa-user menu-icon"></i>
+                                <span class="menu-title">Serviços Realizados</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    @RenderBody()
+                </div>
+            </div>
+            <footer class="footer">
+                <div class="w-100 clearfix">
+                    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Desenvolvido utilizado o tema <a href="http://www.urbanui.com/" target="_blank">Urbanui</a>.</span>
+                    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Projeto de conclusão de curso da PUC Minas Virtual <i class="mdi mdi-heart-outline text-danger"></i></span>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- js -->
+    <script src="~/vendors/fontawesome-free-5.10.1/js/all.min.js"></script>
+    <script src="~/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/vendors/js/vendor.bundle.addons.js"></script>
+    <script src="~/js/jquery.mask.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+    <script src="~/lib/select2/js/select2.js"></script>
+    <script src="~/js/site.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+    $(function () {
+        var type = "@TempData["toastr"]";
+        var toastrMsg = "@TempData["toastrMsg"]";
+        var toastrTitulo = "@TempData["toastrTitulo"]";
+
+        if (type.length > 1) {
+            showToastr(type, toastrMsg, toastrTitulo);
+        }
+    });
+    </script>
+</body>
+</html>

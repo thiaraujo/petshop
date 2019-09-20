@@ -1,0 +1,73 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Petshop App Login</title>
+
+    <!-- css -->
+    <link rel="stylesheet" href="~/vendors/fontawesome-free-5.10.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="~/vendors/css/vendor.bundle.addons.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/toastr.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="main-panel">
+                <div class="content-wrapper d-flex align-items-center auth px-0">
+                    <div class="row w-100 mx-0">
+                        <div class="col-lg-4 mx-auto">
+                            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                                <div class="brand-logo">
+                                    <img src="http://www.urbanui.com/fily/template/images/logo-black.svg" alt="logo">
+                                </div>
+                                <h4>Olá! seja bem vindo(a)</h4>
+                                <h6 class="font-weight-light">Informe seus dados para continuar.</h6>
+                                <form class="pt-3" action="@Url.Action("Acessar")" method="post">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form-control-lg cpf" placeholder="Cpf" name="usuario">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" class="form-control form-control-lg" placeholder="E-mail" name="email">
+                                    </div>
+                                    <div class="mt-3">
+                                        <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">ENTRAR</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- js -->
+    <script src="~/vendors/fontawesome-free-5.10.1/js/all.min.js"></script>
+    <script src="~/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/vendors/js/vendor.bundle.addons.js"></script>
+    <script src="~/js/jquery.mask.min.js"></script>
+    <script src="~/js/toastr.min.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <script>
+    $(function () {
+        var type = "@TempData["toastr"]";
+        var toastrMsg = "@TempData["toastrMsg"]";
+        var toastrTitulo = "@TempData["toastrTitulo"]";
+
+        if (type.length > 1) {
+            showToastr(type, toastrMsg, toastrTitulo);
+        }
+    });
+    </script>
+</body>
+</html>

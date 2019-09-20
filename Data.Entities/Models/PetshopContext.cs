@@ -379,6 +379,8 @@ namespace Data.Entities.Models
 
             modelBuilder.Entity<VendaAvaliacao>(entity =>
             {
+                entity.Property(e => e.DataAvaliado).HasColumnType("datetime");
+
                 entity.HasOne(d => d.Agendamento)
                     .WithMany(p => p.VendaAvaliacao)
                     .HasForeignKey(d => d.AgendamentoId)

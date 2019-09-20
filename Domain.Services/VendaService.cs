@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Models;
+using Data.Entities.ViewModels;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,6 +65,9 @@ namespace Domain.Services
                 pontuacao.Pontos = pontuacao.Pontos + vendaCompleta.Agendamento.Servico.PatazRecebido;
                 pontuacao.DataAtualizado = DateTime.Now;
 
+                //Atualiza tbm o registro da venda
+                venda.PatazTotalRecebido = pontuacao.Pontos ?? 0;
+
                 //se for tipo de venda 4, onde é o pagamento por pontos, então debita -> se chegou aqui, é porque tinha o necessário
                 if (venda.TipoPagamentoId == 4)
                 {
@@ -73,6 +77,9 @@ namespace Domain.Services
 
                 Db.ClientePontuacao.Update(pontuacao);
             }
+
+            //Atualiza a venda
+            Db.Venda.Update(venda);
 
             await Db.SaveChangesAsync();
         }
@@ -110,6 +117,41 @@ namespace Domain.Services
                 .ToListAsync();
 
             return vendas;
+        }
+
+        public async Task<IEnumerable<VendaServicoViewModel>> ConsultaRegistrosPorCliente(int clienteId)
+        {
+            var registros = await DbSet
+                .Include(x => x.Agendamento)
+                .Include(x => x.TipoPagamento)
+                .Include(x => x.Agendamento.Servico)
+                .Include(x => x.Agendamento.Animal)
+                .Include(x => x.Agendamento.Cliente)
+                .Include(x => x.Agendamento.Usuario)
+                .Where(x => x.Agendamento.ClienteId == clienteId)
+                .ToListAsync();
+
+            var avaliacao = await Db.VendaAvaliacao.Where(x => registros.Any(r => r.AgendamentoId == x.AgendamentoId)).ToListAsync();
+
+            var servicosAgendados = new List<VendaServicoViewModel>();
+            foreach (var item in registros)
+            {
+                var avaliacaoRealizada = avaliacao.FirstOrDefault(x => x.AgendamentoId == item.AgendamentoId);
+                servicosAgendados.Add(new VendaServicoViewModel
+                {
+                    Id = item.AgendamentoId,
+                    Cliente = item.Agendamento.Cliente.Nome,
+                    Pet = item.Agendamento.Animal.Nome,
+                    Valor = item.ValorPago.ToString("N"),
+                    PatazRecebido = item.PatazTotalRecebido ?? 0,
+                    Atendente = item.Agendamento.Usuario.Nome,
+                    Nota = avaliacaoRealizada?.Nota,
+                    Data = item.Agendamento.DiaMarcado.ToShortDateString() + " às " + item.Agendamento.HoraMarcado,
+                    Servico = item.Agendamento.Servico.Nome
+                });
+            }
+
+            return servicosAgendados;
         }
     }
 }

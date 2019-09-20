@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Data.Entities.ViewModels.VendaServicoViewModel>
+
+@{
+    ViewData["Title"] = "Produtos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="">
+    <form action="@Url.Action("Agendamentos")">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Procurar por serviço..." autofocus="autofocus" name="s" />
+            <span class="input-group-btn">
+                <button class="btn btn-info btn-lg" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <br />
+</div>
+
+<div class="card">
+    <div class="card-body text-center">
+        Acompanhe sua pontuação atual do programa <b>Petz</b><br />
+        <h4 class="badge badge-primary" style="font-size: 22px">@ViewBag.Pontos</h4>
+    </div>
+</div>
+
+<br />
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">
+            Serviços Realizados
+        </h4>
+        <br />
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">Pet</th>
+                        <th class="text-center">Dia</th>
+                        <th class="text-center">Atendente</th>
+                        <th class="text-center">Serviço</th>
+                        <th class="text-center">Valor</th>
+                        <th class="text-center">Pataz Recebido</th>
+                        <th class="text-center">Avaliação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@item.Pet</td>
+                            <td class="text-center">@item.Data</td>
+                            <td class="text-center">@item.Atendente</td>
+                            <td class="text-center">@item.Servico</td>
+                            <td class="text-center">@item.Valor</td>
+                            <td class="text-center">@item.PatazRecebido</td>
+                            <td class="text-center">
+                                @if (!item.Nota.HasValue)
+                                {
+                                    <button type="button" class="btn btn-xs btn-info" onclick="avaliar(@item.Id)">Avaliar</button>
+                                }
+                                else
+                                {
+                                    <span>@item.Nota</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mdlAvaliar" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Avaliação do Serviço</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form-avaliacao" method="post" action="javascript:void(0)">
+                <div class="modal-body">
+                    <input type="hidden" name="AgendamentoId" id="hddId" />
+                    <label>Como você avalia o atendimento e serviço prestado</label>
+                    <br />
+                    <small>Dê uma nota de 0 a 10:</small>
+                    <br />
+                    <input type="number" min="0" max="10" placeholder="nota" class="form-control" name="Nota" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success" onclick="confirmar()">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/paginas/avaliacao.js"></script>
+}

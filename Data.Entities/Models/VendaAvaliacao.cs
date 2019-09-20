@@ -8,6 +8,7 @@ namespace Data.Entities.Models
         public int Id { get; set; }
         public int AgendamentoId { get; set; }
         public int? Nota { get; set; }
+        public DateTime? DataAvaliado { get; set; }
 
         public virtual Agendamento Agendamento { get; set; }
     }
