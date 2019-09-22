@@ -23,9 +23,9 @@ namespace Site.Controllers
         private readonly IServicoProduto _servicoProduto;
         private readonly IToastrMensagem _toastrMensagem;
 
-        public ServicoController(IServico servico, 
-            IProduto produto, 
-            IServicoProduto servicoProduto, 
+        public ServicoController(IServico servico,
+            IProduto produto,
+            IServicoProduto servicoProduto,
             IToastrMensagem toastrMensagem)
         {
             _servico = servico;
@@ -71,7 +71,7 @@ namespace Site.Controllers
                 return View(registroParaEdicao);
             }
 
-            return View(new Servico());
+            return View(new Servico { Ativo = 1 });
         }
 
         [HttpPost, ValidateAntiForgeryToken]

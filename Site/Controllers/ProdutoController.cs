@@ -94,7 +94,7 @@ namespace Site.Controllers
                 return View(registroParaEdicao);
             }
 
-            return View(new Produto());
+            return View(new Produto { Ativo = 1 });
         }
 
         [HttpPost, ValidateAntiForgeryToken]

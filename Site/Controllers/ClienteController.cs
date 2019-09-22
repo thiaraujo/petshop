@@ -63,7 +63,7 @@ namespace Site.Controllers
                 return View(registroParaEdicao);
             }
 
-            return View(new Cliente());
+            return View(new Cliente { Ativo = 1 });
         }
 
         [HttpPost, ValidateAntiForgeryToken]

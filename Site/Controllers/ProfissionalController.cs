@@ -22,9 +22,9 @@ namespace Site.Controllers
         private readonly IUsuarioEspecialidade _usuarioEspecialidade;
         private readonly IToastrMensagem _toastrMensagem;
 
-        public ProfissionalController(IUsuario usuario, 
+        public ProfissionalController(IUsuario usuario,
             ITipoAnimal tipoAnimal,
-            IUsuarioEspecialidade usuarioEspecialidade, 
+            IUsuarioEspecialidade usuarioEspecialidade,
             IToastrMensagem toastrMensagem)
         {
             _usuario = usuario;
@@ -70,7 +70,7 @@ namespace Site.Controllers
                 return View(registroParaEdicao);
             }
 
-            return View(new Usuario());
+            return View(new Usuario { Ativo = 1 });
         }
 
         [HttpPost, ValidateAntiForgeryToken]
