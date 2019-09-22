@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Data.Entities\Data.Entities.csproj" />
     <ProjectReference Include="..\Domain.Interfaces\Domain.Interfaces.csproj" />
     <ProjectReference Include="..\Middleware.Converters\Middleware.Converters.csproj" />
+    <ProjectReference Include="..\Middleware.Email\Middleware.Email.csproj" />
     <ProjectReference Include="..\Middleware.IoC\Middleware.IoC.csproj" />
   </ItemGroup>
 

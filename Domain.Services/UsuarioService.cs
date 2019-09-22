@@ -14,13 +14,6 @@ namespace Domain.Services
         {
         }
 
-        // Verifica se existe um registro para o ID, juntamente com a senha
-        // Se não for encontrado, retornara null e a aplicação retorna uma mensagem de erro
-        public async Task<Usuario> UsuarioPodeAcessar(int id, string senha)
-        {
-            return await DbSet.FirstOrDefaultAsync(x => x.Id == id && x.SenhaAcesso == senha.EncriptText());
-        }
-
         // Se a variável tipoPet for > 0, é provavel que seja um veterinário
         public async Task<Usuario> CadastraOuAtualiza(Usuario usuario, int[] tipoPet)
         {
@@ -57,18 +50,6 @@ namespace Domain.Services
                 usuarios = usuarios.Where(x => x.Nome.ToLower().Contains(usuario.ToLower())).ToList();
 
             return usuarios;
-        }
-
-        public async Task DesabilitarRegistro(int usuarioId)
-        {
-            var registro = await DbSet.FindAsync(usuarioId);
-            if (registro != null)
-            {
-                registro.Ativo = 0;
-
-                Db.Update(registro);
-                await Db.SaveChangesAsync();
-            }
         }
     }
 }

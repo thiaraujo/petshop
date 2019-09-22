@@ -29,6 +29,8 @@ namespace Site.Controllers
 
         #endregion
 
+        #region Login
+
         public IActionResult Acessar()
         {
             return View();
@@ -43,7 +45,7 @@ namespace Site.Controllers
                 return View();
             }
 
-            var passw = senha.EncriptText();
+            var passw = senha.EncriptText(); // Encripta a senha no formato SHA512b
             try
             {
                 var codigo = Convert.ToInt32(usuario);
@@ -64,8 +66,11 @@ namespace Site.Controllers
             }
         }
 
+        #endregion
+
         public async Task<IActionResult> Sair()
         {
+            // Remove os cookies e joga na tela de sair e em sequencia para tela de login
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return View();
@@ -73,6 +78,7 @@ namespace Site.Controllers
 
         #region Claims
 
+        // Cria o cookie para registrar os dados do usuário que logou
         private async Task<bool> AddClaimsLogin(Usuario operador)
         {
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);

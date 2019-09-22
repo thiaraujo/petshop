@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities.Models;
@@ -19,12 +20,17 @@ namespace Site.Controllers
         private readonly IVenda _vendas;
         private readonly IUsuario _usuario;
         private readonly ICliente _cliente;
+        private readonly IVendaAvaliacao _vendaAvaliacao;
 
-        public RelatorioController(IVenda vendas, IUsuario usuario, ICliente cliente)
+        public RelatorioController(IVenda vendas,
+            IUsuario usuario,
+            ICliente cliente,
+            IVendaAvaliacao vendaAvaliacao)
         {
             _vendas = vendas;
             _usuario = usuario;
             _cliente = cliente;
+            _vendaAvaliacao = vendaAvaliacao;
         }
 
         #endregion
@@ -59,6 +65,23 @@ namespace Site.Controllers
             }
 
             return View(new List<Venda>());
+        }
+
+        public async Task<IActionResult> Avaliacoes(int? profissional, string dtInicio, string dtFim)
+        {
+            await GetValores();
+
+            if (profissional.HasValue)
+            {
+                var inicio = string.IsNullOrEmpty(dtInicio) ? DateTime.Now.AddDays(-1) : Convert.ToDateTime(dtInicio);
+                var fim = string.IsNullOrEmpty(dtFim) ? DateTime.Now : Convert.ToDateTime(dtFim);
+
+                var listDeRegistros = await _vendaAvaliacao.GetAllAsync(x => x.Agendamento.UsuarioId == profissional);
+                listDeRegistros = listDeRegistros.Where(x => x.DataAvaliado >= inicio && x.DataAvaliado <= fim);
+                return View(listDeRegistros.OrderBy(x => x.DataAvaliado));
+            }
+
+            return View(new List<VendaAvaliacao>());
         }
 
         #endregion

@@ -23,7 +23,10 @@ namespace Site.Controllers
         private readonly IServicoProduto _servicoProduto;
         private readonly IToastrMensagem _toastrMensagem;
 
-        public ServicoController(IServico servico, IProduto produto, IServicoProduto servicoProduto, IToastrMensagem toastrMensagem)
+        public ServicoController(IServico servico, 
+            IProduto produto, 
+            IServicoProduto servicoProduto, 
+            IToastrMensagem toastrMensagem)
         {
             _servico = servico;
             _produto = produto;

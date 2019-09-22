@@ -13,24 +13,33 @@ namespace Middleware.IoC
             services.AddScoped<PetshopContext>();
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
+            // Usuario-operador-veterinario
             services.AddScoped<IUsuario, UsuarioService>();
             services.AddScoped<IUsuarioEspecialidade, UsuarioEspecialidadeService>();
+
+            // Cliente-pet
             services.AddScoped<IAnimal, AnimalService>();
-            services.AddScoped<IAgendamento, AgendamentoService>();
             services.AddScoped<ICliente, ClienteService>();
             services.AddScoped<IPorteAnimal, PorteAnimalService>();
+            services.AddScoped<IRacaAnimal, RacaAnimalService>();
+            services.AddScoped<ITipoAnimal, TipoAnimalService>();
+            services.AddScoped<IClientePontuacao, ClientePontuacaoService>();
+
+            // Produtos-promoções
             services.AddScoped<IProduto, ProdutoService>();
             services.AddScoped<IServicoProduto, ServicoProdutoService>();
             services.AddScoped<IPromocao, PromocaoService>();
             services.AddScoped<IPromocaoProdServ, PromocaoProdServService>();
-            services.AddScoped<IRacaAnimal, RacaAnimalService>();
+
+            // Serviços-vendas
             services.AddScoped<IServico, ServicoService>();
-            services.AddScoped<ITipoAnimal, TipoAnimalService>();
+            services.AddScoped<IVendaAvaliacao, VendaAvaliacaoService>();
             services.AddScoped<ITipoPagamento, TipoPagamentoService>();
             services.AddScoped<IVenda, VendaService>();
             services.AddScoped<IVendaProduto, VendaProdutoService>();
-            services.AddScoped<IClientePontuacao, ClientePontuacaoService>();
-            services.AddScoped<IVendaAvaliacao, VendaAvaliacaoService>();
+
+            // Agendamento
+            services.AddScoped<IAgendamento, AgendamentoService>();
         }
     }
 }

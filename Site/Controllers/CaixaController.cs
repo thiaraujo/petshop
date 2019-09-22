@@ -21,7 +21,6 @@ namespace Site.Controllers
         private readonly IAnimal _animal;
         private readonly IServico _servico;
         private readonly IUsuario _usuario;
-        private readonly IUsuarioEspecialidade _especialidade;
         private readonly IPromocaoProdServ _promocao;
         private readonly ITipoPagamento _tipoPagamento;
         private readonly IVendaProduto _vendaProduto;
@@ -35,7 +34,6 @@ namespace Site.Controllers
             IAnimal animal,
             IServico servico,
             IUsuario usuario,
-            IUsuarioEspecialidade especialidade,
             IAgendamento agendamento,
             ITipoPagamento tipoPagamento,
             IProduto produtos,
@@ -47,7 +45,6 @@ namespace Site.Controllers
             _animal = animal;
             _servico = servico;
             _usuario = usuario;
-            _especialidade = especialidade;
             _agendamento = agendamento;
             _tipoPagamento = tipoPagamento;
             _produtos = produtos;
@@ -321,25 +318,14 @@ namespace Site.Controllers
         [HttpPost]
         public async Task<bool> PostAddProduto(VendaProduto vendaProduto)
         {
-            if (vendaProduto.AgendamentoId < 1 || vendaProduto.ProdutoId < 1)
+            if (vendaProduto.AgendamentoId < 1 || !vendaProduto.ProdutoId.HasValue || vendaProduto.ProdutoId < 1)
                 return false;
 
-            //Calcula os valores
-            var valores = await _produtos.GetByIdAsync(vendaProduto.ProdutoId.Value);
-            vendaProduto.Valor = valores.Preco ?? 0;
-            //Pega as promoções baseadas no produto
-            var promocao = await _promocao.GetByIdAsync(x => x.ProdutoId == vendaProduto.ProdutoId);
-            //Se tiver promoção, verifica se esta no prazo indicado
-            if (promocao != null)
-            {
-                if (DateTime.Now >= promocao.Promocao.DataInicio && DateTime.Now <= promocao.Promocao.DataFim)
-                {
-                    vendaProduto.ValorComDesconto = (vendaProduto.Valor * promocao.Promocao.Percentual) / 100;
-                    vendaProduto.ValorComDesconto = vendaProduto.Valor - vendaProduto.ValorComDesconto;
-                }
-            }
+            //Pega o produto e já veirifica se possui desconto
+            var produtoComValorAtualizado = await _produtos.RegistroDoProduto(vendaProduto.ProdutoId.Value);
+            vendaProduto.ValorComDesconto = produtoComValorAtualizado.PrecoComDesconto;
+            vendaProduto.Valor = produtoComValorAtualizado.Preco ?? 0 * (vendaProduto.Quantidade ?? 1);
 
-            //se chegou aqui, então salva
             await _venda.RegistraVendaProduto(vendaProduto);
             return true;
         }
@@ -347,9 +333,7 @@ namespace Site.Controllers
         [HttpPost]
         public async Task<bool> PostClienteAusente(int id)
         {
-            var agendamento = await _agendamento.GetByIdAsync(id);
-            agendamento.Ausente = 1;
-            _agendamento.Update(agendamento);
+            await _agendamento.AgendamentoCancelado(id);
             return true;
         }
 

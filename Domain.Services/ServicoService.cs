@@ -78,18 +78,5 @@ namespace Domain.Services
 
             return servicos;
         }
-
-        public async Task DesabilitarServico(int servicoId)
-        {
-            var registro = await DbSet.FindAsync(servicoId);
-
-            if (registro != null)
-            {
-                registro.Ativo = 0;
-
-                Db.Update(registro);
-                await Db.SaveChangesAsync();
-            }
-        }
     }
 }

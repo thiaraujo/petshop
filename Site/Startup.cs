@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Middleware.Converters.Interface;
 using Middleware.Converters.Service;
+using Middleware.Email;
 using Middleware.IoC;
 
 namespace Site
@@ -50,9 +48,22 @@ namespace Site
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            // Seta as urls para lowercase
             services.AddRouting(options => options.LowercaseUrls = true);
+            // Registra as dependências
             RegisterContainer.RegisterDependencies(services);
+            // Cria uma instância e faz injecção para as toastr
             services.AddScoped<IToastrMensagem, ToastrMensagem>();
+
+            // Inicia o serviço de envio de email
+            try
+            {
+                var servicoEmail = new VerificaAgendamento();
+            }
+            catch (Exception)
+            {
+                //error
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

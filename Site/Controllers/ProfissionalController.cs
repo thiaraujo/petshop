@@ -6,7 +6,6 @@ using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Middleware.Converters.Interface;
-using Middleware.Converters.Service;
 using Site.Abstraction;
 using X.PagedList;
 

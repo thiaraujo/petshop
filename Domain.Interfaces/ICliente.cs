@@ -8,6 +8,5 @@ namespace Domain.Interfaces
     {
         Task<Cliente> CadastraOuAtualiza(Cliente cliente);
         Task<IEnumerable<Cliente>> ConsultaRegistros(string cliente);
-        Task DesabilitarRegistro(int clienteId);
     }
 }

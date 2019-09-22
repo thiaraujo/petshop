@@ -3,6 +3,7 @@ using Middleware.Converters.Models;
 
 namespace Site.Abstraction
 {
+    /* Modelo de controller para habilitar a função de toastr(alerta) */
     public class AbstractController : Controller
     {
         public void Toastr(Payload payloadMensagem)

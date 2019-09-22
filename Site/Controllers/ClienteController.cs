@@ -19,7 +19,8 @@ namespace Site.Controllers
         private readonly ICliente _cliente;
         private readonly IToastrMensagem _toastrMensagem;
 
-        public ClienteController(ICliente cliente, IToastrMensagem toastrMensagem)
+        public ClienteController(ICliente cliente,
+            IToastrMensagem toastrMensagem)
         {
             _cliente = cliente;
             _toastrMensagem = toastrMensagem;

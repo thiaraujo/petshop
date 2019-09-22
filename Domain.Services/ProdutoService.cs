@@ -44,38 +44,6 @@ namespace Domain.Services
             return produtos;
         }
 
-        // Movimentações de baixa e entrada manual no estoque
-        public async Task MovimentacaoEstoque(int produtoId, int? entrada, int? saida)
-        {
-            var produto = await DbSet.FindAsync(produtoId);
-            if (produto == null)
-                return;
-
-            int? estoque;
-            if (entrada.HasValue)
-                estoque = +entrada;
-            else
-                estoque = -saida;
-
-            produto.Estoque = estoque;
-            Db.Update(produto);
-            await Db.SaveChangesAsync();
-        }
-
-        // Função para desabilitar um registro
-        public async Task DesabilitarRegistro(int produtoId)
-        {
-            var registro = await DbSet.FindAsync(produtoId);
-
-            if (registro != null)
-            {
-                registro.Ativo = 0;
-
-                Db.Update(registro);
-                await Db.SaveChangesAsync();
-            }
-        }
-
         // Cadastra um produto
         public async Task<ProdutoViewModel> RegistroDoProduto(int produtoId)
         {

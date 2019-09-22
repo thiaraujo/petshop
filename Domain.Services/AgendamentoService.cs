@@ -107,5 +107,20 @@ namespace Domain.Services
 
             return agendamentos;
         }
+
+        //Retorna os agendamentos do dia, para enviar o email e lembrar os clientes
+        public async Task<IEnumerable<Agendamento>> ExisteAgendamentoDia()
+        {
+            //Pega os agendados para hoje
+            var agendamentos = await DbSet.Where(x => x.DiaMarcado == DateTime.Now).ToListAsync();
+            if (agendamentos.Any())
+            {
+                var hora = DateTime.Now.TimeOfDay.Add(TimeSpan.FromHours(-4));
+                agendamentos = agendamentos.Where(x => x.HoraMarcado >= hora && x.HoraMarcado <= hora).ToList();
+                return agendamentos;
+            }
+
+            return null;
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace Domain.Interfaces
         Task<TimeSpan> HorarioAgendamentoDisponivel(int profissionalId, DateTime dataAgendado, TimeSpan horaAgendado, int servicoAgendadoId);
         Task<bool> ConsultaProfissionalBaseadoNoAnimal(int animalId, int usuarioId);
         Task<Agendamento> CadastraOuAtualiza(Agendamento agendamento);
-        Task AgendamentoCancelado(int agendamentoId);
         Task<IEnumerable<Agendamento>> ConsultaRegistros(int? profissionalId, DateTime? dataAgendamento);
+        Task AgendamentoCancelado(int agendamentoId);
     }
 }

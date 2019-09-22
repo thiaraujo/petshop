@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Middleware.Converters.Interface;
 using Site.Abstraction;
 using X.PagedList;
 
@@ -16,12 +15,10 @@ namespace Site.Controllers
 
         const int TamanhoPagina = 15;
         private readonly IProduto _produto;
-        private readonly IToastrMensagem _toastrMensagem;
 
-        public EstoqueController(IProduto produto, IToastrMensagem toastrMensagem)
+        public EstoqueController(IProduto produto)
         {
             _produto = produto;
-            _toastrMensagem = toastrMensagem;
         }
 
         #endregion

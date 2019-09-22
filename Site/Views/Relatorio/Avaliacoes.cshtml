@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Data.Entities.Models.VendaAvaliacao>
+
+@{
+    ViewData["Title"] = "Relatório de Avaliações";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <h4 class="card-title">
+                    Avaliações por um profissional
+                </h4>
+            </div>
+            <div class="col-md-8">
+                <form action="@Url.Action("Avaliacoes")" method="get">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Data Inicio</label>
+                            <input type="text" class="form-control date" name="dtInicio" placeholder="__/__/___" value="@Context.Request.Query["dtInicio"]" />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Data Fim</label>
+                            <input type="text" class="form-control date" name="dtFim" placeholder="__/__/___" value="@Context.Request.Query["dtFim"]" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Profissional</label>
+                            <div class="input-group">
+                                @Html.DropDownList("profissional", (SelectList) ViewBag.Profissionais, " -- Profissional -- ", new {@class = "form-control"})
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-info"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br />
+        <div class="table-responsive">
+            @if (Model.Count() > 0)
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Data</th>
+                            <th>Serviço</th>
+                            <th>Cliente</th>
+                            <th class="text-center">Nota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@item.DataAvaliado?.ToShortDateString()</td>
+                                <td>@item.Agendamento.Servico.Nome</td>
+                                <td>@item.Agendamento.Cliente.Nome</td>
+                                <td class="text-center">@item.Nota</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="text-center">TOTAL</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td class="text-center">@((Model.Sum(x => x.Nota ?? 0) / Model.Count(x => x.Nota.HasValue)).ToString("F1")) média</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-primary text-center">
+                    <h5>Nenhum registro para ser exibido!</h5>
+                </div>
+            }
+        </div>
+    </div>
+</div>

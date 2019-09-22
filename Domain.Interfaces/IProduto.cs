@@ -9,7 +9,6 @@ namespace Domain.Interfaces
     {
         Task<Produto> CadastraOuAtualiza(Produto produto);
         Task<IEnumerable<Produto>> ConsultaRegistros(string produto);
-        Task DesabilitarRegistro(int produtoId);
         Task<ProdutoViewModel> RegistroDoProduto(int produtoId);
         Task<bool> AtualizaEstoque(int id, int estoque);
     }

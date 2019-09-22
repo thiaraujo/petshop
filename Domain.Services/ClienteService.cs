@@ -46,19 +46,5 @@ namespace Domain.Services
 
             return clientes;
         }
-
-        // Função para desabilitar um cliente
-        public async Task DesabilitarRegistro(int clienteId)
-        {
-            var registro = await DbSet.FindAsync(clienteId);
-
-            if (registro != null)
-            {
-                registro.Ativo = 0;
-
-                Db.Update(registro);
-                await Db.SaveChangesAsync();
-            }
-        }
     }
 }

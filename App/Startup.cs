@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Entities.Models;
+using Domain.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +36,7 @@ namespace App
                 options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            
+
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-BR");
 
             services.AddAuthentication(options =>
@@ -50,8 +52,11 @@ namespace App
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            // Seta as urls para lowercase
             services.AddRouting(options => options.LowercaseUrls = true);
+            // Registra as dependências
             RegisterContainer.RegisterDependencies(services);
+            // Cria uma instância e faz injecção para as toastr
             services.AddScoped<IToastrMensagem, ToastrMensagem>();
         }
 
