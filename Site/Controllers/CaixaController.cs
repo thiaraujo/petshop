@@ -67,6 +67,12 @@ namespace Site.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmarVenda(Venda venda)
         {
+            if (venda.TipoPagamentoId < 1 || venda.ValorPago < 1)
+            {
+                Toastr(_toastr.Aviso("Você precisa informar o tipo do pagamento e o valor pago pelo cliente!"));
+                return RedirectToAction("Registro");
+            }
+
             var produtos = await _vendaProduto.GetAllAsync(x => x.AgendamentoId == venda.AgendamentoId);
             var agendamento = await _agendamento.GetByIdAsync(venda.AgendamentoId);
 
@@ -151,6 +157,9 @@ namespace Site.Controllers
         [HttpGet]
         public async Task<TimeSpan> GetDisponivelAgendamento(int usuarioId, string data, string hora, int servicoId)
         {
+            if (string.IsNullOrEmpty(data) || string.IsNullOrEmpty(hora))
+                return TimeSpan.Zero;
+
             var dt = Convert.ToDateTime(data);
             var time = TimeSpan.Parse(hora);
 

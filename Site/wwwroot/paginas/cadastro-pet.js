@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    if ($("#hddAtivo").val() === "0") {
+    if ($("#hddAtivo").val() === "0" || $("#hddAtivo").val() === "") {
         $("#cbHabilitado").val("0");
         $("#cbHabilitado").prop("checked", false);
     }
@@ -8,8 +8,6 @@
         $("#cbVeterinario").val("1");
         $("#cbVeterinario").prop("checked", true);
     }
-
-    carregaProdutos();
 });
 
 $("#cbHabilitado").change(function () {

@@ -20,7 +20,7 @@ create table TipoAnimal(
 	Ativo int not null
 )
 
--- UsuÃ¡rios e as especialidades
+-- Usuários e as especialidades
 create table UsuarioEspecialidade(
 	Id int primary key identity(1,1),
 	TipoAnimalId int foreign key references TipoAnimal(Id) not null,
@@ -201,3 +201,55 @@ create table ClientePontuacao(
 	Pontos int,
 	DataAtualizado datetime,	
 );
+
+--Primeiros inserts no banco de dados
+insert into PorteAnimal values ('Pequeno')
+insert into PorteAnimal values ('Médio-pequeno')
+insert into PorteAnimal values ('Médio')
+insert into PorteAnimal values ('Médio-grande')
+insert into PorteAnimal values ('Grande')
+
+insert into TipoAnimal values ('Cachorro', 1);
+insert into TipoAnimal values ('Gato', 1);
+insert into TipoAnimal values ('Rato', 1);
+insert into TipoAnimal values ('Cobra', 1);
+insert into TipoAnimal values ('Macado', 1);
+insert into TipoAnimal values ('Coelho', 1);
+insert into TipoAnimal values ('Passáro', 1);
+insert into TipoAnimal values ('Capivara', 1);
+insert into TipoAnimal values ('Hamster', 1);
+
+insert into RacaAnimal values ('Pinscher');
+insert into RacaAnimal values ('Basset');
+insert into RacaAnimal values ('Beagle');
+insert into RacaAnimal values ('Collie');
+insert into RacaAnimal values ('Boxer');
+insert into RacaAnimal values ('Bulldog');
+insert into RacaAnimal values ('Caniche');
+insert into RacaAnimal values ('Chihuahua');
+insert into RacaAnimal values ('Chow Chow');
+insert into RacaAnimal values ('Dobermann');
+insert into RacaAnimal values ('Dogue Alemão');
+insert into RacaAnimal values ('Galgo');
+insert into RacaAnimal values ('Husky Siberiano');
+insert into RacaAnimal values ('Pastor Alemão');
+insert into RacaAnimal values ('Pitbull');
+insert into RacaAnimal values ('Pug');
+insert into RacaAnimal values ('Rottweiler');
+insert into RacaAnimal values ('Samoiedo');
+insert into RacaAnimal values ('Persa');
+insert into RacaAnimal values ('Siamês');
+insert into RacaAnimal values ('Himalaia');
+insert into RacaAnimal values ('Maine Coon');
+insert into RacaAnimal values ('Angorá');
+insert into RacaAnimal values ('Siberiano');
+insert into RacaAnimal values ('Burmese');
+insert into RacaAnimal values ('Ragdoll');
+
+insert into TipoPagamento values ('Cartão de Crédito')
+insert into TipoPagamento values ('Cartão de Débito')
+insert into TipoPagamento values ('Dinheiro')
+insert into TipoPagamento values ('Pataz')
+
+insert into Usuario (Nome, cpf, rg, CodigoAcesso, SenhaAcesso, EhVet, EhAdministrador, DataCadastro, Ativo)
+values ('Jack Sparrow', '123.456.789-19', '1236548-8', 100, '3C9909AFEC25354D551DAE21590BB26E38D53F2173B8D3DC3EEE4C047E7AB1C1EB8B85103E3BE7BA613B31BB5C9C36214DC9F14A42FD7A2FDB84856BCA5C44C2', 0, 1, getdate(), 1);

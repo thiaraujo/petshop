@@ -30,8 +30,13 @@ $("#txtData").change(function (e) {
 });
 
 $("#ddlUsuario").change(function (e) {
-    getEspecialidadeAutoriza();
-    getDisponibilidadeAgenda();
+    if ($(this).val() === "-- selecione --") {
+        $("#divAgendamento").hide();
+        $("#divEspecialidade").hide();
+    } else {
+        getEspecialidadeAutoriza();
+        getDisponibilidadeAgenda();
+    }
 });
 
 $("#txtHora").change(function (e) {
@@ -137,10 +142,11 @@ function getEspecialidadeAutoriza() {
 
     $.get("/caixa/GetUsuariosEspecialidade", data)
         .done(function (status) {
+            $("#divEspecialidade").show();
             if (status === true) {
-                $("#divEspecialidade").append("p").prop("id", "especialidade").text("Este profissional é capacitado para o atendimento.").addClass("alert alert-success");
+                $("#divEspecialidadeText").removeClass("alert alert-danger").text("Este profissional é capacitado para o atendimento.").addClass("alert alert-success");
             } else {
-                $("#divEspecialidade").append("p").prop("id", "especialidade").text("Este profissional não é capacitado para o atendimento.").addClass("alert alert-danger");
+                $("#divEspecialidadeText").removeClass("alert alert-success").text("Este profissional não é capacitado para o atendimento.").addClass("alert alert-danger");
             }
         });
 
@@ -157,12 +163,13 @@ function getDisponibilidadeAgenda() {
 
     $.get("/caixa/GetDisponivelAgendamento", data)
         .done(function (status) {
+            $("#divEspecialidade").show();
             if (status !== "00:00:00") {
-                $("#divAgendamento").append("p").prop("id", "disponivel").text("Este profissional estará disponível para o atendimento e o tempo estimado será de: " + status + ".").addClass("alert alert-info");
+                $("#divAgendamento").removeClass("alert alert-warning").text("Este profissional estará disponível para o atendimento e o tempo estimado será de: " + status + ".").addClass("alert alert-info");
                 $("#btnConfirmar").attr("disabled", false);
                 $("#txtObs").attr("disabled", false);
             } else {
-                $("#divAgendamento").append("p").prop("id", "disponivel").text("Este profissional não estará disponível para o atendimento.").addClass("alert alert-warning");
+                $("#divAgendamento").removeClass("alert alert-info").text("Este profissional não estará disponível para o atendimento.").addClass("alert alert-warning");
             }
         });
 
@@ -213,7 +220,7 @@ function getAgendamentos() {
                             "<td class='text-center'>" +
                             "<button class='btn btn-xs btn-info " + (item.ausente ? 'ausente' : '') + "' onclick='getRegistroEdicao(" + item.id + ")' title='Visualizar detalhes'><i class='fa fa-edit'></i></button>" +
                             "<button class='btn btn-xs btn-success " + (item.ausente ? 'ausente' : '') + "' onclick='abrirPagamento(" + item.id + ")' title='Realizar o pagamento'><i class='fa fa-credit-card'></i></button>" +
-                            "<span class='badge badge-danger " + (!item.ausente ? 'ausente' : '') + "'>ausente</span>"+
+                            "<span class='badge badge-danger " + (!item.ausente ? 'ausente' : '') + "'>ausente</span>" +
                             "</td>" +
                             "</tr>";
                     });
@@ -276,7 +283,7 @@ function getTipoPagamento() {
         .done(function (response) {
             op = "<option>-- selecione --</option>";
             $.each(response, function (i, item) {
-                if (item.nome.indexOf("Pataz") > 0) {
+                if (item.nome.indexOf("Pataz") > -1) {
                     if (temPz === false) {
                         op += "<option value='" + item.id + "' disabled=''>" + item.nome + "</option>";
                     }

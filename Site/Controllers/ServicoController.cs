@@ -82,7 +82,10 @@ namespace Site.Controllers
             if (cadastroEdicaoConfirmado == null)
             {
                 Toastr(_toastrMensagem.Aviso("Registro de cadastro inválido! Verifique os campos digitados e tente novamente."));
-                return RedirectToAction("Cadastro", new { servico.Id });
+                if (servico.Id > 0)
+                    return RedirectToAction("Cadastro", new { servico.Id });
+                
+                return View(servico);
             }
 
             if (produtos.Any())
